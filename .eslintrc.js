@@ -30,7 +30,15 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'no-useless-escape': 0,
     'vue/html-indent': ['warn', 2, {
-      attribute: 0
+      attribute: 0,
+      alignAttributesVertically: false
+    }],
+    'vue/max-attributes-per-line': ['warn', {
+      // 'singleline': 3,
+      'multiline': {
+        'max': 1,
+        'allowFirstLine': true
+      }
     }]
   }
 }

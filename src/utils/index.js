@@ -14,6 +14,18 @@ export const camelToTitle = function (text) {
   }  
 }
 
+export const getUrlQueryParams = function () {
+  // get current URL query parameters
+  const query = {}
+  const pairs = window.location.search.slice(1).split('&')
+  for (const pair of pairs) {
+    const parts = pair.split('=')
+    const key = decodeURIComponent(parts[0])
+    const value = decodeURIComponent(parts[1])
+    query[key] = value
+  }
+  return query
+}
 // helper function to append query parameters to a URL for fetch
 export const addUrlQueryParams = function (endpoint, params) {
   let url = endpoint
@@ -22,7 +34,7 @@ export const addUrlQueryParams = function (endpoint, params) {
     const keys = Object.keys(params)
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
-      const value = keys[key]
+      const value = params[key]
       if (i === 0) {
         url += '?'
       } else {
@@ -42,11 +54,16 @@ export const fetch = async function (url, options = {}) {
   options.headers = options.headers || {}
   options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/json'
   
+  // stringify body if object
+  if (typeof options.body === 'object') {
+    options.body = JSON.stringify(options.body)
+  }
+  console.log('fetch', url, options)
   // add query parameters to URL
   try {
-    console.log('url', url)
+    // console.log('url', url)
     const endpoint = addUrlQueryParams(url, options.query)
-    console.log('endpoint', endpoint)
+    // console.log('endpoint', endpoint)
     const response = await window.fetch(endpoint, options)
     const text = await response.text()
     if (response.ok) {

@@ -3,7 +3,7 @@ const routes = [{
   path: '*',
   redirect: '/'
 }, {
-  // the home page / landing page
+  // the home page
   name: 'Home',
   path: '/',
   component: () => import(`../views/home.vue`)
