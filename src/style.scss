@@ -1,0 +1,18 @@
+// import cisco fonts from momentum-ui
+$brand-font-folder: '~@momentum-ui/core/fonts';
+@import '~@momentum-ui/core/scss/typography/mixins.scss';
+
+// set fonts in bulma
+$family-primary: "CiscoSansTT Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// import bulma source
+@import "~bulma";
+
+// import '~buefy/dist/buefy.css';
+// import buefy source
+@import "~buefy/src/scss/buefy";
+
+// set buefy b-tag font to regular instead of light
+span.tag {
+  font-family: "CiscoSansTT Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
