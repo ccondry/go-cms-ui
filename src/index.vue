@@ -3,6 +3,7 @@
   class="container is-fluid is-marginless app-content"
   style="padding: 0;"
   >
+    <!-- vue-router container -->
     <transition
     mode="out-in"
     enter-active-class="fadeIn"
@@ -18,6 +19,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import router from './router'
 
 export default {
   computed: {
@@ -31,7 +33,7 @@ export default {
       if (val && !oldVal) {
         // user just logged in
         // check if they have an active AD account
-        this.checkAccount()
+        this.getAccount()
       }
     }
   },
@@ -45,7 +47,7 @@ export default {
   methods: {
     ...mapActions([
       'checkJwt',
-      'checkAccount'
+      'getAccount'
     ])
   }
 }
@@ -61,5 +63,15 @@ html, body {
 .container {
   height: 100vh;
   width: 100vh;
+}
+.signin {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(./assets/images/sign_in_background.jpg);
+  background-position: 0 0;
+  background-size:cover
 }
 </style>

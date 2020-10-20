@@ -58,7 +58,7 @@ export const fetch = async function (url, options = {}) {
   if (typeof options.body === 'object') {
     options.body = JSON.stringify(options.body)
   }
-  console.log('fetch', url, options)
+  // console.log('fetch', url, options)
   // add query parameters to URL
   try {
     // console.log('url', url)
@@ -77,9 +77,18 @@ export const fetch = async function (url, options = {}) {
       try {
         m = JSON.parse(text).message
       } catch (e) {
+        const regex = /text\/html/i
+        if (response.headers.get('content-type').match(regex)) {
+          // text/html - don't return that whole thing
+          m = ''
+        }
       }
-      console.log('bad response', m)
-      const error = Error(`${response.status} ${response.statusText} - ${m}`)
+      // console.log('bad response', m)
+      let message = `${response.status} ${response.statusText}`
+      if (m.length) {
+        message += ` ${m}`
+      }
+      const error = Error(message)
       error.status = response.status
       error.statusText = response.statusText
       error.text = m

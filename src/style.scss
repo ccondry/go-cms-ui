@@ -12,6 +12,10 @@ $family-primary: "CiscoSansTT Regular", "Helvetica Neue", Helvetica, Arial, sans
 // import buefy source
 @import "~buefy/src/scss/buefy";
 
+$mdi-font-path: '~@mdi/font/fonts';
+// import material design icons
+@import "~@mdi/font/scss/materialdesignicons.scss";
+
 // set buefy b-tag font to regular instead of light
 span.tag {
   font-family: "CiscoSansTT Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;

@@ -14,16 +14,29 @@ function parseJwt (token) {
 }
 
 const state = {
-  jwt: null
+  jwt: null,
+  adUser: null
 }
 
 const mutations = {
   [types.SET_JWT] (state, data) {
     state.jwt = data
+  },
+  [types.SET_AD_USER] (state, data) {
+    state.adUser = data
   }
 }
 
 const getters = {
+  isAdmin: (state, getters) => {
+    try {
+      const adminGroupDn = 'CN=test,CN=Users,DC=uk,DC=cms-dcloud,DC=com'
+      return getters.adUser.memberOf.includes(adminGroupDn)
+    } catch (e) {
+      return false
+    }
+  },
+  adUser: state => state.adUser,
   jwt: state => state.jwt,
   isLoggedIn: (state, getters) => {
     try {
@@ -85,23 +98,122 @@ const actions = {
   logout ({dispatch}) {
     dispatch('unsetJwt')
   },
-  async checkAccount ({dispatch, getters}) {
-    // check user active directory account exists
-    const url = getters.endpoints.account
-    const options = getters.defaultRestOptions
+  async disableAccount ({getters, dispatch}) {
+    console.log('user.disableAccount action')
+    dispatch('setWorking', {group: 'account', type: 'disable', value: true})
+    const url = getters.endpoints.disableAccount
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
     try {
-      const response = await fetch(url, options)
+      await fetch(url, options)
+      // success - refresh account data
+      dispatch('getAccount')
       Toast.open({
-        message: response,
-        duration: 20 * 1000,
+        message: 'disable account success',
+        duration: 10 * 1000,
+        type: 'is-success'
+      })
+    } catch (e) {
+      Toast.open({
+        message: `failed to disable account: ${e.message}`,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setWorking', {group: 'account', type: 'disable', value: false})
+    }
+  },
+  async enableAccount ({getters, dispatch}) {
+    console.log('user.enableAccount action')
+    dispatch('setWorking', {group: 'account', type: 'enable', value: true})
+    const url = getters.endpoints.enableAccount
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
+    try {
+      await fetch(url, options)
+      // success - refresh account data
+      dispatch('getAccount')
+      Toast.open({
+        message: 'enable account success',
+        duration: 10 * 1000,
+        type: 'is-success'
+      })
+    } catch (e) {
+      Toast.open({
+        message: `failed to enable account: ${e.message}`,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setWorking', {group: 'account', type: 'enable', value: false})
+    }
+  },
+  async createAccount ({getters}, data = {}) {
+    console.log('user.createAccount action')
+    dispatch('setWorking', {group: 'account', type: 'create', value: true})
+    const dn = data.dn || '12345'
+    const password = data.password || 'C1sco12345!'
+
+    const url = getters.endpoints.account
+    const options = {
+      method: 'POST',
+      body: {dn, password},
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
+    try {
+      await fetch(url, options)
+      Toast.open({
+        message: 'create account success',
+        duration: 10 * 1000,
         type: 'is-success'
       })
     } catch (e) {
       Toast.open({
         message: e.message,
-        duration: 20 * 1000,
+        duration: 10 * 1000,
         type: 'is-danger'
       })
+    } finally {
+      dispatch('setWorking', {group: 'account', type: 'create', value: false})
+    }
+  },
+  async getAccount ({dispatch, getters}) {
+    console.log('user.getAccount action')
+    // check user active directory account exists
+    dispatch('setLoading', {group: 'account', type: 'get', value: true})
+    const url = getters.endpoints.account
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
+    try {
+      const user = await fetch(url, options)
+      console.log('getAccount user:', user)
+      this.commit(types.SET_AD_USER, user)
+      // Toast.open({
+      //   message: user,
+      //   duration: 10 * 1000,
+      //   type: 'is-success'
+      // })
+    } catch (e) {
+      Toast.open({
+        message: e.message,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setLoading', {group: 'account', type: 'get', value: false})
     }
   },
   async checkJwt ({dispatch, getters}) {
@@ -127,6 +239,7 @@ const actions = {
           method: 'POST',
           body: query
         }
+        dispatch('setWorking', {group: 'user', type: 'login', value: true})
         try {
           const response = await fetch(url, options)
           if (response.jwt) {
@@ -141,10 +254,12 @@ const actions = {
             // unexpected SSO error - display to user
             Toast.open({
               message: e.message,
-              duration: 20 * 1000,
+              duration: 10 * 1000,
               type: 'is-danger'
             })
           }
+        } finally {
+          dispatch('setWorking', {group: 'user', type: 'login', value: false})
         }
       } else {
         // no SSO auth code - send user to SSO login
