@@ -107,7 +107,7 @@ const webpackConfig = {
     new HtmlWebpackPlugin({
       template: './src/index.ejs',
       filename: './index.html',
-      favicon: './src/favicon.ico',
+      favicon: './src/assets/images/favicon.ico',
       environment: process.env.NODE_ENV
     }),
     new ProgressBarPlugin(),
