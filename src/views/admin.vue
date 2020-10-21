@@ -1,15 +1,5 @@
 <template>
-  <section class="signin">
-    <!-- admin panel button -->
-    <b-button
-    style="float: right; position: absolute; right: 10px; top: 10px;"
-    type="is-primary"
-    rounded
-    @click="clickHome"
-    >
-      Home
-    </b-button>
-
+  <section class="main">
     <div class="is-parent">
       <b-loading :active="isLoading" />
       <!-- logged in -->
@@ -78,14 +68,14 @@
           </b-table-column>
 
           <!-- admin -->
-          <b-table-column
+          <!-- <b-table-column
           v-slot="props"
           field="admin"
           label="Admin"
           sortable
           >
             {{ props.row.admin }}
-          </b-table-column>
+          </b-table-column> -->
 
           <b-table-column
           v-slot="props"
@@ -110,6 +100,7 @@
               <pre>{{ props.row }}</pre>
 
               <div class="buttons" style="float: right;">
+                <!-- disable -->
                 <b-button
                 v-if="props.row.enabled"
                 type="is-warning"
@@ -117,12 +108,22 @@
                 >
                   Disable
                 </b-button>
+
+                <!-- enable -->
                 <b-button
                 v-if="!props.row.enabled"
                 type="is-success"
                 @click="clickEnableUser(props.row)"
                 >
                   Enable
+                </b-button>
+
+                <!-- delete -->
+                <b-button
+                type="is-danger"
+                @click="clickDeleteUser(props.row)"
+                >
+                  Delete
                 </b-button>
               </div>
             </div>
@@ -167,13 +168,26 @@ export default {
     ...mapActions([
       'getUsers',
       'disableUser',
-      'enableUser'
+      'enableUser',
+      'deleteUser'
     ]),
     clickDisableUser (user) {
-      this.disableAccount(user)
+      this.disableUser(user.sAMAccountName)
     },
     clickEnableUser (user) {
-      this.enableUser(user)
+      this.enableUser(user.sAMAccountName)
+    },
+    clickDeleteUser (user) {
+      console.log(user)
+      this.$buefy.dialog.confirm({
+        message: `Are you sure you want to <strong>delete ${user.sAMAccountName}</strong>?`,
+        type: 'is-danger',
+        // cancelText: 'Disagree',
+        confirmText: 'Delete',
+        onConfirm: () => {
+          this.deleteUser(user.sAMAccountName)
+        }
+      })
     },
     clickHome () {
       this.$router.push({name: 'Home'}).catch(e => {})

@@ -12,9 +12,11 @@ const getters = {
 
 const mutations = {
   [types.SET_USERS] (state, data) {
+    // replace all users state data with new data
     state.users = data
   },
-  [types.UPDATE_USERS] (state, data) {
+  [types.UPSERT_USERS] (state, data) {
+    // update users in state
     for (const user of data) {
       const index = state.users.findIndex(v => v.username === user.username)
       if (index >= 0) {
@@ -22,6 +24,13 @@ const mutations = {
       } else {
         state.users.push(user)
       }
+    }
+  },
+  [types.REMOVE_USER] (state, username) {
+    // remove one user from state
+    const index = state.users.findIndex(v => v.username === username)
+    if (index >= 0) {
+      state.users.splice(index, 1)
     }
   }
 }
@@ -40,7 +49,7 @@ const actions = {
     try {
       const user = await fetch(url, options)
       console.log('getUser:', user)
-      this.commit(types.UPDATE_USERS, [user])
+      this.commit(types.UPSERT_USERS, [user])
     } catch (e) {
       Toast.open({
         message: e.message,
@@ -51,12 +60,38 @@ const actions = {
       dispatch('setLoading', {group: 'user', type: 'get', value: false})
     }
   },
+  // delete AD user
+  async deleteUser ({dispatch, getters}, username) {
+    console.log('admin.deleteUser action')
+    dispatch('setLoading', {group: 'user', type: 'delete', value: true})
+    const url = getters.endpoints.user + '/' + username
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
+    try {
+      // remove user from AD
+      await fetch(url, options)
+      // remove user from state
+      this.commit(types.REMOVE_USER, username)
+    } catch (e) {
+      Toast.open({
+        message: e.message,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setLoading', {group: 'user', type: 'delete', value: false})
+    }
+  },
   // get AD users list
-  async getUsers ({commit, dispatch, getters}) {
+  async getUsers ({dispatch, getters}) {
     console.log('admin.getUsers action')
-    // check user active directory account exists
+    // check user active directory user exists
     dispatch('setLoading', {group: 'user', type: 'list', value: true})
-    const url = getters.endpoints.users
+    const url = getters.endpoints.user
     const options = {
       headers: {
         Authorization: 'Bearer ' + getters.jwt
@@ -81,36 +116,62 @@ const actions = {
       dispatch('setLoading', {group: 'user', type: 'list', value: false})
     }
   },
-  async disableUser ({getters, dispatch}, user) {
+  async disableUser ({getters, dispatch}, username) {
     console.log('admin.disableUser action')
     dispatch('setWorking', {group: 'user', type: 'disable', value: true})
-    const url = getters.endpoints.disableUser
+    const url = getters.endpoints.user + '/' + username + '/disable'
     const options = {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + getters.jwt
-      },
-      body: {
-        username: user.username
       }
     }
     try {
       await fetch(url, options)
-      // success - refresh account data
+      // success - refresh user data
       dispatch('getUser')
       Toast.open({
-        message: 'disable account success',
+        message: 'disable user success',
         duration: 10 * 1000,
         type: 'is-success'
       })
     } catch (e) {
       Toast.open({
-        message: `failed to disable account: ${e.message}`,
+        message: `failed to disable user: ${e.message}`,
         duration: 10 * 1000,
         type: 'is-danger'
       })
     } finally {
       dispatch('setWorking', {group: 'user', type: 'disable', value: false})
+    }
+  },
+  async enableUser ({getters, dispatch}, username) {
+    console.log('admin.enableUser action')
+    dispatch('setWorking', {group: 'user', type: 'enable', value: true})
+    const url = getters.endpoints.user + '/' + username + '/enable'
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      }
+    }
+    try {
+      await fetch(url, options)
+      // success - refresh user data
+      dispatch('getUser')
+      Toast.open({
+        message: 'enable user success',
+        duration: 10 * 1000,
+        type: 'is-success'
+      })
+    } catch (e) {
+      Toast.open({
+        message: `failed to enable user: ${e.message}`,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setWorking', {group: 'user', type: 'enable', value: false})
     }
   },
 }

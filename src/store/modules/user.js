@@ -30,8 +30,9 @@ const mutations = {
 const getters = {
   isAdmin: (state, getters) => {
     try {
-      const adminGroupDn = 'CN=test,CN=Users,DC=uk,DC=cms-dcloud,DC=com'
-      return getters.adUser.memberOf.includes(adminGroupDn)
+      // const adminGroupDn = 'CN=test,CN=Users,DC=uk,DC=cms-dcloud,DC=com'
+      // return getters.adUser.memberOf.includes(adminGroupDn)
+      return getters.jwtUser.isAdmin
     } catch (e) {
       return false
     }
@@ -156,22 +157,21 @@ const actions = {
       dispatch('setWorking', {group: 'account', type: 'enable', value: false})
     }
   },
-  async createAccount ({getters}, data = {}) {
+  async createAccount ({dispatch, getters}, {dn, password, passcode}) {
     console.log('user.createAccount action')
     dispatch('setWorking', {group: 'account', type: 'create', value: true})
-    const dn = data.dn || '12345'
-    const password = data.password || 'C1sco12345!'
 
     const url = getters.endpoints.account
     const options = {
       method: 'POST',
-      body: {dn, password},
+      body: {dn, password, passcode},
       headers: {
         Authorization: 'Bearer ' + getters.jwt
       }
     }
     try {
       await fetch(url, options)
+      dispatch('getAccount')
       Toast.open({
         message: 'create account success',
         duration: 10 * 1000,

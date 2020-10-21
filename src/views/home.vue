@@ -1,5 +1,6 @@
 <template>
-  <section class="signin">
+  <section class="main">
+    <!-- main content -->
     <div class="is-parent">
       <!-- logged in -->
       <article
@@ -17,11 +18,17 @@
             <b-input v-model="password" />
           </b-field>
           <b-field label="Call ID">
-            <b-input v-model="callId" />
+            <b-input v-model="dn" />
           </b-field>
           <b-field label="Meeting Passcode">
             <b-input v-model="passcode" />
           </b-field>
+          <b-button
+          type="is-success"
+          @click="clickCreate"
+          >
+            Create
+          </b-button>
         </div>
 
         <!-- user has AD account -->
@@ -29,6 +36,9 @@
           <!-- enabled AD account -->
           <div v-if="adUser.enabled">
             Your account is created and enabled
+            <br>
+            JWT User
+            <pre>{{ jwtUser }}</pre>
             <br>
             Active Directory User
             <pre>{{ adUser }}</pre>
@@ -57,17 +67,6 @@
       <!-- loading -->
       <b-loading :active="!isLoggedIn || isLoading || isWorking" />
     </div>
-
-    <!-- admin panel button -->
-    <b-button
-    v-if="isAdmin"
-    style="float: right; position: absolute; right: 10px; top: 10px;"
-    type="is-primary"
-    rounded
-    @click="clickAdmin"
-    >
-      Admin
-    </b-button>
   </section>
 </template>
 
@@ -78,7 +77,7 @@ export default {
     return {
       password: '',
       passcode: '',
-      callId: ''
+      dn: ''
     }
   },
 
@@ -110,6 +109,13 @@ export default {
       'enableAccount',
       'disableAccount'
     ]),
+    clickCreate () {
+      this.createAccount({
+        password: this.password,
+        passcode: this.passcode,
+        dn: this.dn
+      })
+    },
     clickDisable () {
       this.disableAccount()
     },
@@ -118,10 +124,10 @@ export default {
     },
     clickAdmin () {
       this.$router.push({name: 'Admin'}).catch(e => {})
-    }
-    // clickLogout () {
-    //   this.logout()
-    // },
+    },
+    clickLogout () {
+      this.logout()
+    },
     // clickgetAccount () {
     //   this.getAccount()
     // },
