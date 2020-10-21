@@ -14,6 +14,9 @@
 
         <!-- user does not have AD account -->
         <div v-if="!adUser" class="content">
+          <p>
+            Fill out this form to create your GoCMS user account. 
+          </p>
           <b-field label="New Password" label-position="on-border">
             <b-input v-model="password" />
           </b-field>
