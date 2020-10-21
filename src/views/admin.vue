@@ -1,7 +1,7 @@
 <template>
   <section class="main">
     <div class="is-parent">
-      <b-loading :active="isLoading" />
+      <b-loading :active="isLoading || isWorking" />
       <!-- logged in -->
       <article
       v-if="isLoggedIn && !isLoading"
@@ -143,10 +143,16 @@ export default {
     ...mapGetters([
       'users',
       'isLoggedIn',
-      'loading'
+      'loading',
+      'working'
     ]),
     isLoading () {
       return this.loading.user.list
+    },
+    isWorking () {
+      return this.working.user.delete ||
+      this.working.user.enable ||
+      this.working.user.disable
     }
   },
 

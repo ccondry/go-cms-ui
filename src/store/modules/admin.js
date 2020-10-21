@@ -18,7 +18,7 @@ const mutations = {
   [types.UPSERT_USERS] (state, data) {
     // update users in state
     for (const user of data) {
-      const index = state.users.findIndex(v => v.username === user.username)
+      const index = state.users.findIndex(v => v.sAMAccountName === user.username)
       if (index >= 0) {
         state.users.splice(index, 1, user)
       } else {
@@ -28,8 +28,9 @@ const mutations = {
   },
   [types.REMOVE_USER] (state, username) {
     // remove one user from state
-    const index = state.users.findIndex(v => v.username === username)
+    const index = state.users.findIndex(v => v.sAMAccountName === username)
     if (index >= 0) {
+      console.log('REMOVE_USER', index)
       state.users.splice(index, 1)
     }
   }
@@ -63,7 +64,7 @@ const actions = {
   // delete AD user
   async deleteUser ({dispatch, getters}, username) {
     console.log('admin.deleteUser action')
-    dispatch('setLoading', {group: 'user', type: 'delete', value: true})
+    dispatch('setWorking', {group: 'user', type: 'delete', value: true})
     const url = getters.endpoints.user + '/' + username
     const options = {
       method: 'DELETE',
@@ -76,14 +77,21 @@ const actions = {
       await fetch(url, options)
       // remove user from state
       this.commit(types.REMOVE_USER, username)
+      // notify user
+      Toast.open({
+        message: `Successfully deleted user ${username}`,
+        duration: 6 * 1000,
+        type: 'is-success'
+      })
     } catch (e) {
+      // notify user
       Toast.open({
         message: e.message,
         duration: 10 * 1000,
         type: 'is-danger'
       })
     } finally {
-      dispatch('setLoading', {group: 'user', type: 'delete', value: false})
+      dispatch('setWorking', {group: 'user', type: 'delete', value: false})
     }
   },
   // get AD users list
