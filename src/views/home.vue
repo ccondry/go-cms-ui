@@ -14,13 +14,13 @@
 
         <!-- user does not have AD account -->
         <div v-if="!adUser" class="content">
-          <b-field label="New Password">
+          <b-field label="New Password" label-position="on-border">
             <b-input v-model="password" />
           </b-field>
-          <b-field label="Call ID">
+          <b-field label="Call ID" label-position="on-border">
             <b-input v-model="dn" />
           </b-field>
-          <b-field label="Meeting Passcode">
+          <b-field label="Meeting Passcode" label-position="on-border">
             <b-input v-model="passcode" />
           </b-field>
           <b-button
