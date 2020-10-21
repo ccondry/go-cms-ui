@@ -3,7 +3,8 @@ $brand-font-folder: '~@momentum-ui/core/fonts';
 @import '~@momentum-ui/core/scss/typography/mixins.scss';
 
 // import momentum-ui color variables
-@import '~@momentum-ui/core/scss/colors/settings-base.scss';
+// @import '~@momentum-ui/core/scss/colors/settings-base.scss';
+@import './momentum-colors.scss';
 
 // set fonts in bulma
 $family-primary: "CiscoSansTT Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
