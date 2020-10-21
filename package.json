@@ -37,7 +37,7 @@
   "dependencies": {
     "@mdi/font": "^5.5.55",
     "@momentum-ui/core": "^19.9.18",
-    "buefy": "^0.9.3",
+    "buefy": "https://github.com/ccondry/buefy.git#dev",
     "bulma": "https://github.com/ccondry/bulma.git",
     "moment": "^2.29.1",
     "vue": "2.6.12",
