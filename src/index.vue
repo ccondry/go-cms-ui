@@ -11,7 +11,7 @@
       <!-- admin panel button -->
       <b-button
       v-if="isAdmin && !atAdmin"
-      type="is-primary"
+      type="is-info"
       rounded
       @click="clickAdmin"
       >
@@ -21,7 +21,7 @@
       <!-- home button -->
       <b-button
       v-if="!atHome"
-      type="is-primary"
+      type="is-info"
       rounded
       @click="clickHome"
       >
@@ -31,7 +31,7 @@
       <!-- logout -->
       <b-button
       v-if="isLoggedIn"
-      type="is-info"
+      type="is-primary"
       rounded
       @click="clickLogout"
       >
