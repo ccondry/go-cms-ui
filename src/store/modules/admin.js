@@ -1,5 +1,5 @@
 import * as types from '../mutation-types'
-import {ToastProgrammatic as Toast} from 'buefy'
+import {ToastProgrammatic as Toast} from 'buefy/src'
 import {fetch} from '../../utils'
 
 const state = {

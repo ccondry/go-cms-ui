@@ -3,7 +3,7 @@ import {
   getUrlQueryParams,
   fetch
 } from '../../utils'
-import {ToastProgrammatic as Toast} from 'buefy'
+import {ToastProgrammatic as Toast} from 'buefy/src'
 import * as types from '../mutation-types'
 
 // parse a JWT payload into a JSON object
