@@ -104,6 +104,7 @@
                 <b-button
                 v-if="props.row.enabled"
                 type="is-warning"
+                rounded
                 @click="clickDisableUser(props.row)"
                 >
                   Disable
@@ -113,6 +114,7 @@
                 <b-button
                 v-if="!props.row.enabled"
                 type="is-success"
+                rounded
                 @click="clickEnableUser(props.row)"
                 >
                   Enable
@@ -121,6 +123,7 @@
                 <!-- delete -->
                 <b-button
                 type="is-danger"
+                rounded
                 @click="clickDeleteUser(props.row)"
                 >
                   Delete
@@ -190,6 +193,7 @@ export default {
         type: 'is-danger',
         // cancelText: 'Disagree',
         confirmText: 'Delete',
+        rounded: true,
         onConfirm: () => {
           this.deleteUser(user.sAMAccountName)
         }

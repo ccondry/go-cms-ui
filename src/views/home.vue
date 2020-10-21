@@ -25,6 +25,7 @@
           </b-field>
           <b-button
           type="is-success"
+          rounded
           @click="clickCreate"
           >
             Create
@@ -44,6 +45,7 @@
             <pre>{{ adUser }}</pre>
             <b-button
             type="is-danger"
+            rounded
             @click="clickDisable"
             >
               Disable My Account
@@ -56,6 +58,7 @@
             <br>
             <b-button
             type="is-success"
+            rounded
             @click="clickEnable"
             >
               Enable My Account
