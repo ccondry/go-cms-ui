@@ -26,9 +26,10 @@
           <b-button
           type="is-success"
           rounded
+          expanded
           @click="clickCreate"
           >
-            Create
+            Create GoCMS User
           </b-button>
         </div>
 
