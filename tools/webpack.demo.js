@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -158,13 +158,13 @@ const webpackConfig = {
         }
       }),
       new OptimizeCSSAssetsPlugin({}),
-      new UglifyJsPlugin({
-        cache: true,
-        // parallel: 5,
-        uglifyOptions: {
-          compress: true
-        }
-      })
+      // new UglifyJsPlugin({
+      //   cache: true,
+      //   // parallel: 5,
+      //   uglifyOptions: {
+      //     compress: true
+      //   }
+      // })
     ]
   },
   // devtool: '#eval-source-map'
