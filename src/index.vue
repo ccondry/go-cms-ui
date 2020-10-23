@@ -10,7 +10,7 @@
     >
       <!-- admin panel button -->
       <b-button
-      v-if="isAdmin && !atAdmin"
+      v-if="isAdmin && atHome"
       type="is-info"
       rounded
       @click="clickAdmin"
@@ -20,7 +20,7 @@
 
       <!-- home button -->
       <b-button
-      v-if="!atHome"
+      v-if="atAdmin"
       type="is-info"
       rounded
       @click="clickHome"
