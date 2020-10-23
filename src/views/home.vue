@@ -8,8 +8,17 @@
       class="tile is-child is-white flex-container box"
       > 
         <!-- title -->
-        <p class="title flex-item">
+        <p class="title">
           Welcome {{ jwtUser.given_name }}!
+        </p>
+
+        <p class="subtitle">
+          <span v-if="expired">
+            Your account has expired.
+          </span>
+          <span v-else>
+            Your account will expire {{ expiresFromNow }}.
+          </span>
         </p>
 
         <!-- user does not have AD account -->
@@ -18,13 +27,34 @@
             Fill out this form to create your GoCMS user account. 
           </p>
           <b-field label="New Password" label-position="on-border">
-            <b-input v-model="password" />
+            <b-input
+            v-model="password"
+            type="password"
+            :required="true"
+            placeholder="A new password, only for GoCMS"
+            aria-placeholder="A new password, only for GoCMS"
+            />
           </b-field>
-          <b-field label="Call ID" label-position="on-border">
-            <b-input v-model="dn" />
+          <b-field
+          label="Call ID"
+          label-position="on-border"
+          >
+            <b-input
+            v-model="dn"
+            placeholder=""
+            aria-placeholder=""
+            :required="true"
+            />
           </b-field>
-          <b-field label="Meeting Passcode" label-position="on-border">
-            <b-input v-model="passcode" />
+          <b-field
+          label="Meeting Passcode"
+          label-position="on-border"
+          >
+            <b-input
+            v-model="passcode"
+            placeholder="Optional"
+            aria-placeholder="Optional"
+            />
           </b-field>
           <b-button
           type="is-success"
@@ -38,94 +68,45 @@
 
         <!-- user has AD account -->
         <div v-if="adUser">
-          <!-- enabled but expired AD account -->
-          <div
-          v-if="expired"
-          style="display: flex;justify-content: center;align-items: center;"
-          >
-            Your account has expired.
-          </div>
-
-          <!-- enabled and not expired AD account -->
-          <div v-if="!expired">
-            Your account will expire {{ expiresFromNow }}
-            <!-- JWT user -->
-            <b-collapse
-            class="card"
-            animation="slide"
-            aria-id="jwt-user"
-            :open="false"
-            >
-              <div
-              slot="trigger" 
-              slot-scope="props"
-              class="card-header"
-              role="button"
-              aria-controls="jwt-user"
+          <!-- show CMS cospace info if user not expired -->
+          <user-space v-if="!expired" class="content" />
+          <div class="content">
+            <!-- buttons -->
+            <b-field>
+              <b-button
+              v-if="expired"
+              type="is-success"
+              rounded
+              expanded
+              @click="clickExtend"
               >
-                <p class="card-header-title">
-                  JWT User
-                </p>
-                <a class="card-header-icon">
-                  <b-icon :icon="props.open ? 'menu-up' : 'menu-down'" />
-                </a>
-              </div>
-              <div class="card-content">
-                <div class="content">
-                  <pre>{{ jwtUser }}</pre>
-                </div>
-              </div>
-            </b-collapse>
+                Enable My Account
+              </b-button>
+            </b-field>
 
-            <!-- AD user -->
-            <b-collapse
-            class="card"
-            animation="slide"
-            aria-id="jwt-user"
-            :open="false"
-            >
-              <div
-              slot="trigger" 
-              slot-scope="props"
-              class="card-header"
-              role="button"
-              aria-controls="jwt-user"
+            <b-field>
+              <b-button
+              v-if="!expired"
+              type="is-primary"
+              rounded
+              expanded
+              @click="clickExtend"
               >
-                <p class="card-header-title">
-                  Active Directory User
-                </p>
-                <a class="card-header-icon">
-                  <b-icon :icon="props.open ? 'menu-up' : 'menu-down'" />
-                </a>
-              </div>
-              <div class="card-content">
-                <div class="content">
-                  <pre>{{ adUser }}</pre>
-                </div>
-              </div>
-            </b-collapse>
-          </div>
-          <!-- buttons -->
-          <div class="card-content">
-            <b-button
-            v-if="expired"
-            type="is-success"
-            rounded
-            expanded
-            @click="clickExtend"
-            >
-              Enable My Account
-            </b-button>
+                Extend My Account
+              </b-button>
+            </b-field>
 
-            <b-button
-            v-if="!expired"
-            type="is-primary"
-            rounded
-            expanded
-            @click="clickExtend"
-            >
-              Extend My Account
-            </b-button>
+            <b-field>
+              <b-button
+              v-if="!expired"
+              type="is-info"
+              rounded
+              expanded
+              @click="clicksetUserPassword"
+              >
+                Reset My Password
+              </b-button>
+            </b-field>
           </div>
         </div>
       </article>
@@ -139,8 +120,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
+import UserSpace from '../components/space'
 
 export default {
+  components: {
+    UserSpace
+  },
+
   data () {
     return {
       password: '',
@@ -157,16 +143,9 @@ export default {
       'loading',
       'working',
       'isAdmin',
-      'users'
+      'users',
+      'adUser'
     ]),
-    adUser () {
-      // match AD user to JWT sub (username)
-      try {
-        return this.users.find(v => v.sAMAccountName === this.jwtUser.sub)
-      } catch (e) {
-        return null
-      }
-    },
     expires () {
       return (this.adUser.accountExpires - 116444736000000000) / 10000
     },
@@ -187,11 +166,12 @@ export default {
   methods: {
     ...mapActions([
       'logout',
-      'createAccount',
-      'setUserExpiration'
+      'createUser',
+      'setUserExpiration',
+      'setUserPassword'
     ]),
     clickCreate () {
-      this.createAccount({
+      this.createUser({
         password: this.password,
         passcode: this.passcode,
         dn: this.dn
@@ -205,6 +185,26 @@ export default {
     },
     clickExtend () {
       this.setUserExpiration({username: this.adUser.sAMAccountName, hour: 12})
+    },
+    clicksetUserPassword () {
+      this.$buefy.dialog.prompt({
+        title: 'Reset Password',
+        message: 'Choose your new password',
+        inputAttrs: {
+          type: 'password',
+          placeholder: 'Your New Password',
+          'aria-placeholder': 'Your New Password'
+        },
+        confirmText: 'Submit',
+        rounded: true,
+        onConfirm: (password) => {
+          this.setUserPassword({
+            username: this.jwtUser.sub,
+            password
+          })
+        },
+        type: 'is-success'
+      })
     }
   }
 }

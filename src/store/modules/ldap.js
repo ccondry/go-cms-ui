@@ -37,6 +37,43 @@ const mutations = {
 }
 
 const actions = {
+  async setUserPassword ({dispatch, getters}, {username, password}) {
+    // reset user password in ldap
+    dispatch('setWorking', {group: 'user', type: username, value: true})
+    try {
+      const url = getters.endpoints.user + '/' + username + '/password'
+      const options = {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + getters.jwt
+        },
+        body: {username, password}
+      }
+      await fetch(url, options)
+      dispatch('getUser', username)
+      // this user setting their own password?
+      if (getters.jwtUser.sub === username) {
+        Toast.open({
+          message: 'Your password has been changed.',
+          type: 'is-success'
+        })
+      } else {
+        // admin setting user password
+        Toast.open({
+          message: 'Successfully changed user password.',
+          type: 'is-success'
+        })
+      }
+    } catch (e) {
+      Toast.open({
+        message: e.message,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setWorking', {group: 'user', type: username, value: false})
+    }
+  },
   // get single AD user
   async getUser ({commit, dispatch, getters}, username) {
     // console.log('admin.getUser action')
@@ -85,6 +122,7 @@ const actions = {
     } catch (e) {
       Toast.open({
         message: `Failed to set account expiration: ${e.message}`,
+        duration: 10 * 1000,
         type: 'is-danger'
       })
     } finally {
@@ -154,62 +192,33 @@ const actions = {
       dispatch('setLoading', {group: 'ldap', type: 'user', value: false})
     }
   },
-  async disableUser ({getters, dispatch}, username) {
-    // console.log('ldap.disableUser action')
-    dispatch('setWorking', {group: 'user', type: username, value: true})
-    const url = getters.endpoints.user + '/' + username + '/disable'
+  async createUser ({dispatch, getters}, {dn, password, passcode}) {
+    console.log('ldap.createUser action')
+    dispatch('setWorking', {group: 'user', type: getters.jwtUser.sub, value: true})
+
+    const url = getters.endpoints.user
     const options = {
       method: 'POST',
+      body: {dn, password, passcode},
       headers: {
         Authorization: 'Bearer ' + getters.jwt
       }
     }
     try {
       await fetch(url, options)
-      // success - refresh user data
-      dispatch('getUser')
+      dispatch('getUser', getters.jwtUser.sub)
       Toast.open({
-        message: 'disable user success',
-        duration: 10 * 1000,
+        message: 'Successfully created your user account',
         type: 'is-success'
       })
     } catch (e) {
       Toast.open({
-        message: `failed to disable user: ${e.message}`,
+        message: e.message,
         duration: 10 * 1000,
         type: 'is-danger'
       })
     } finally {
-      dispatch('setWorking', {group: 'user', type: username, value: false})
-    }
-  },
-  async enableUser ({getters, dispatch}, username) {
-    // console.log('ldap.enableUser action')
-    dispatch('setWorking', {group: 'user', type: username, value: true})
-    const url = getters.endpoints.user + '/' + username + '/enable'
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + getters.jwt
-      }
-    }
-    try {
-      await fetch(url, options)
-      // success - refresh user data
-      dispatch('getUser')
-      Toast.open({
-        message: 'enable user success',
-        duration: 10 * 1000,
-        type: 'is-success'
-      })
-    } catch (e) {
-      Toast.open({
-        message: `failed to enable user: ${e.message}`,
-        duration: 10 * 1000,
-        type: 'is-danger'
-      })
-    } finally {
-      dispatch('setWorking', {group: 'user', type: username, value: false})
+      dispatch('setWorking', {group: 'user', type: getters.jwtUser.sub, value: false})
     }
   }
 }

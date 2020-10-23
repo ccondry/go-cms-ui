@@ -1,7 +1,7 @@
 <template>
   <div
+  id="main-container"
   class="container is-fluid is-marginless app-content"
-  style="padding-top: 1rem; padding-left: 0; padding-right: 0;"
   >
     <!-- top-right buttons -->
     <div
@@ -125,11 +125,14 @@ html, body {
 }
 
 // make container fill viewport
-.container {
+#main-container {
   height: 100vh;
   background-image: url(./assets/images/sign_in_background.jpg);
   background-position: 0 0;
   background-size: cover;
+  padding-top: 1rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 // route content class - centered

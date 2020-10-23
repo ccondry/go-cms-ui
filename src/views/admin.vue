@@ -1,12 +1,14 @@
 <template>
   <section class="main">
     <div class="is-parent">
-      <b-loading :active="loading.ldap.user" />
       <!-- logged in -->
       <article
-      v-if="isLoggedIn && !loading.ldap.user"
+      v-if="isLoggedIn"
       class="tile is-child is-white flex-container box"
-      > 
+      >
+        <p class="title">
+          Users
+        </p>
         <b-table
         ref="table"
         :data="users"
@@ -21,6 +23,21 @@
         aria-page-label="Page"
         aria-current-label="Current page"
         >
+          <!-- <b-loading :active="loading.ldap.user" :is-full-page="false" /> -->
+          <!-- expired icon -->
+          <b-table-column
+          v-slot="props"
+          field="accountExpires"
+          sortable
+          >
+            <b-icon
+            v-if="isExpired(props.row)"
+            icon="account-cancel"
+            type="is-danger"
+            />
+          </b-table-column>
+
+          <!-- name -->
           <b-table-column
           v-slot="props"
           field="fullName"
@@ -111,19 +128,38 @@
               :is-full-page="false"
               />
 
-              <pre>{{ props.row }}</pre>
+              <!-- AD user -->
+              <b-collapse
+              class="card"
+              animation="slide"
+              :aria-id="'ad-user-' + props.row.sAMAccountName"
+              :open="false"
+              >
+                <div
+                slot="trigger" 
+                slot-scope="cprops"
+                class="card-header"
+                role="button"
+                :aria-controls="'ad-user-' + props.row.sAMAccountName"
+                >
+                  <p class="card-header-title">
+                    Active Directory Attributes
+                  </p>
+                  <a class="card-header-icon">
+                    <b-icon :icon="cprops.open ? 'menu-up' : 'menu-down'" />
+                  </a>
+                </div>
+                <div class="card-content">
+                  <div class="content">
+                    <pre>{{ props.row }}</pre>
+                  </div>
+                </div>
+              </b-collapse>
 
-              <b-field label="Expires">
-                <p class="control">
-                  {{ expires(props.row) }}
-                </p>
-              </b-field>
-
-              <div class="buttons" style="float: right;">
+              <div class="buttons" style="padding-top: 1rem; float: right;">
                 <!-- extend -->
                 <b-button
-                v-if="props.row.enabled"
-                type="is-success"
+                type="is-primary"
                 rounded
                 :disabled="working.user[props.row.sAMAccountName]"
                 @click="clicksetUserExpiration(props.row)"
@@ -133,7 +169,7 @@
 
                 <!-- expire -->
                 <b-button
-                v-if="props.row.enabled"
+                v-if="!isExpired(props.row)"
                 type="is-warning"
                 rounded
                 :disabled="working.user[props.row.sAMAccountName]"
@@ -142,26 +178,14 @@
                   Expire Now
                 </b-button>
 
-                <!-- disable -->
+                <!-- reset password -->
                 <b-button
-                v-if="props.row.enabled"
-                type="is-warning"
+                type="is-info"
                 rounded
                 :disabled="working.user[props.row.sAMAccountName]"
-                @click="clickDisableUser(props.row)"
+                @click="clickResetPassword(props.row)"
                 >
-                  Disable
-                </b-button>
-
-                <!-- enable -->
-                <b-button
-                v-if="!props.row.enabled"
-                type="is-success"
-                rounded
-                :disabled="working.user[props.row.sAMAccountName]"
-                @click="clickEnableUser(props.row)"
-                >
-                  Enable
+                  Reset Password
                 </b-button>
 
                 <!-- delete -->
@@ -185,6 +209,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
+
+function expiresUtc (user) {
+  return (user.accountExpires - 116444736000000000) / 10000
+}
 
 export default {
   data () {
@@ -219,16 +247,12 @@ export default {
   methods: {
     ...mapActions([
       'getUsers',
-      'disableUser',
-      'enableUser',
       'deleteUser',
-      'setUserExpiration'
+      'setUserExpiration',
+      'setUserPassword'
     ]),
-    clickDisableUser (user) {
-      this.disableUser(user.sAMAccountName)
-    },
-    clickEnableUser (user) {
-      this.enableUser(user.sAMAccountName)
+    isExpired (user) {
+      return expiresUtc(user) < Date.now()
     },
     clickDeleteUser (user) {
       console.log(user)
@@ -250,8 +274,8 @@ export default {
       // expand details for table row
       this.$refs.table.toggleDetails(row)
     },
-    expires (adUser) {
-      return moment((adUser.accountExpires - 116444736000000000) / 10000).fromNow()
+    expires (user) {
+      return moment(expiresUtc(user)).fromNow()
     },
     convertLdapDate (date) {
       // 2020 10 20 20 25 23.0Z
@@ -275,6 +299,26 @@ export default {
       this.setUserExpiration({
         username: adUser.sAMAccountName,
         hour: 0
+      })
+    },
+    clickResetPassword (adUser) {
+      this.$buefy.dialog.prompt({
+        title: 'Reset Password',
+        message: 'Choose the new password for ' + adUser.sAMAccountName,
+        inputAttrs: {
+          type: 'password',
+          placeholder: `${adUser.sAMAccountName}'s New Password`,
+          'aria-placeholder': `${adUser.sAMAccountName}'s New Password`
+        },
+        confirmText: 'Submit',
+        rounded: true,
+        onConfirm: (password) => {
+          this.setUserPassword({
+            username: adUser.sAMAccountName,
+            password
+          })
+        },
+        type: 'is-success'
       })
     }
   }

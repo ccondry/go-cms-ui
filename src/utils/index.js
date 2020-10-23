@@ -86,7 +86,7 @@ export const fetch = async function (url, options = {}) {
       // console.log('bad response', m)
       let message = `${response.status} ${response.statusText}`
       if (m.length) {
-        message += ` ${m}`
+        message += ` - ${m}`
       }
       const error = Error(message)
       error.status = response.status

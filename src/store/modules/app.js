@@ -1,26 +1,30 @@
 import * as types from '../mutation-types'
 import Vue from 'vue'
+import {ToastProgrammatic as Toast} from 'buefy/src'
+import {fetch} from '../../utils'
 
 const state = {
   loading: {
     app: {},
     user: {},
     users: {},
-    account: {}
+    ldap: {}
   },
   working: {
     app: {},
     user: {},
     users: {},
-    account: {}
+    ldap: {}
   },
-  isProduction: process.env.NODE_ENV === 'production'
+  isProduction: process.env.NODE_ENV === 'production',
+  demoEnvironment: {}
 }
 
 const getters = {
-  isProduction: (state) => state.isProduction,
-  loading: (state) => state.loading,
-  working: (state) => state.working
+  isProduction: state => state.isProduction,
+  loading: state => state.loading,
+  working: state => state.working,
+  demoEnvironment: state => state.demoEnvironment
 }
 
 const mutations = {
@@ -49,6 +53,9 @@ const mutations = {
     } else {
       state.loading[data.group][data.type] = data.value
     }
+  },
+  [types.SET_ENVIRONMENT] (state, data) {
+    state.demoEnvironment = data
   }
 }
 
@@ -58,6 +65,29 @@ const actions = {
   },
   setLoading ({commit}, {group, type, value = true}) {
     commit(types.SET_LOADING, {group, type, value})
+  },
+  async getDemoEnvironment ({commit, dispatch, getters}) {
+    console.log('get demo environment...')
+    // get system environment info
+    dispatch('setLoading', {group: 'app', type: 'demo', value: true})
+    try {
+      const url = getters.endpoints.demo
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + getters.jwt
+        }
+      }
+      const environment = await fetch(url, options)
+      commit(types.SET_ENVIRONMENT, environment)
+    } catch (e) {
+      Toast.open({
+        message: 'Failed to load demo environment information: ' + e.message,
+        duration: 10 * 1000,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setWorking', {group: 'app', type: 'demo', value: false})
+    }
   }
 }
 
