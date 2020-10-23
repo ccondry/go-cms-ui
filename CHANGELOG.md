@@ -4,6 +4,13 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2020.10.23-2
+
+### Features
+* **Account Expiration:** Improve the success message for extending the expiration
+of user accounts
+
+
 # 2020.10.23-1
 
 ### Features
