@@ -188,7 +188,7 @@ export default {
     ...mapActions([
       'logout',
       'createAccount',
-      'extendUser'
+      'setUserExpiration'
     ]),
     clickCreate () {
       this.createAccount({
@@ -204,7 +204,7 @@ export default {
       this.logout()
     },
     clickExtend () {
-      this.extendUser({username: this.adUser.sAMAccountName})
+      this.setUserExpiration({username: this.adUser.sAMAccountName, hour: 12})
     }
   }
 }

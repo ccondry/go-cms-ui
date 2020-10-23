@@ -126,7 +126,7 @@
                 type="is-success"
                 rounded
                 :disabled="working.user[props.row.sAMAccountName]"
-                @click="clickExtendUser(props.row)"
+                @click="clicksetUserExpiration(props.row)"
                 >
                   Extend Expiration
                 </b-button>
@@ -222,7 +222,7 @@ export default {
       'disableUser',
       'enableUser',
       'deleteUser',
-      'extendUser'
+      'setUserExpiration'
     ]),
     clickDisableUser (user) {
       this.disableUser(user.sAMAccountName)
@@ -265,14 +265,14 @@ export default {
       // return d
       return moment(d).fromNow()
     },
-    clickExtendUser (adUser) {
-      this.extendUser({
+    clicksetUserExpiration (adUser) {
+      this.setUserExpiration({
         username: adUser.sAMAccountName,
         hour: 12
       })
     },
     clickExpireUser (adUser) {
-      this.extendUser({
+      this.setUserExpiration({
         username: adUser.sAMAccountName,
         hour: 0
       })

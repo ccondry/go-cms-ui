@@ -61,9 +61,9 @@ const actions = {
       dispatch('setLoading', {group: 'user', type: username, value: false})
     }
   },
-  async extendUser ({getters, dispatch}, {username, hour = 12}) {
+  async setUserExpiration ({getters, dispatch}, {username, hour = 12}) {
     // extend accountExpires by specified ms (default to 12 hours)
-    console.log('ldap.extendUser action')
+    console.log('ldap.setUserExpiration action')
     dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username + '/extend'
     const options = {
