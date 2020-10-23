@@ -1,6 +1,6 @@
-import * as types from '../mutation-types'
 import {ToastProgrammatic as Toast} from 'buefy/src'
 import {fetch} from '../../utils'
+import * as types from '../mutation-types'
 
 const state = {
   users: []
@@ -18,7 +18,7 @@ const mutations = {
   [types.UPSERT_USERS] (state, data) {
     // update users in state
     for (const user of data) {
-      const index = state.users.findIndex(v => v.sAMAccountName === user.username)
+      const index = state.users.findIndex(v => v.sAMAccountName === user.sAMAccountName)
       if (index >= 0) {
         state.users.splice(index, 1, user)
       } else {
@@ -40,7 +40,7 @@ const actions = {
   // get single AD user
   async getUser ({commit, dispatch, getters}, username) {
     console.log('admin.getUser action')
-    dispatch('setLoading', {group: 'user', type: 'get', value: true})
+    dispatch('setLoading', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username
     const options = {
       headers: {
@@ -58,13 +58,43 @@ const actions = {
         type: 'is-danger'
       })
     } finally {
-      dispatch('setLoading', {group: 'user', type: 'get', value: false})
+      dispatch('setLoading', {group: 'user', type: username, value: false})
+    }
+  },
+  async extendUser ({getters, dispatch}, {username, hour = 12}) {
+    // extend accountExpires by specified ms (default to 12 hours)
+    console.log('ldap.extendUser action')
+    dispatch('setWorking', {group: 'user', type: username, value: true})
+    const url = getters.endpoints.user + '/' + username + '/extend'
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + getters.jwt
+      },
+      body: {hour}
+    }
+    try {
+      await fetch(url, options)
+      // success - refresh user data
+      dispatch('getUser', username)
+      // notify user success
+      Toast.open({
+        message: `User account expiration extended by ${hour} hours`,
+        type: 'is-success'
+      })
+    } catch (e) {
+      Toast.open({
+        message: `Failed to extend account expiration: ${e.message}`,
+        type: 'is-danger'
+      })
+    } finally {
+      dispatch('setWorking', {group: 'user', type: username, value: false})
     }
   },
   // delete AD user
   async deleteUser ({dispatch, getters}, username) {
     console.log('admin.deleteUser action')
-    dispatch('setWorking', {group: 'user', type: 'delete', value: true})
+    dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username
     const options = {
       method: 'DELETE',
@@ -91,14 +121,14 @@ const actions = {
         type: 'is-danger'
       })
     } finally {
-      dispatch('setWorking', {group: 'user', type: 'delete', value: false})
+      dispatch('setWorking', {group: 'user', type: username, value: false})
     }
   },
   // get AD users list
   async getUsers ({dispatch, getters}) {
     console.log('admin.getUsers action')
     // check user active directory user exists
-    dispatch('setLoading', {group: 'user', type: 'list', value: true})
+    dispatch('setLoading', {group: 'ldap', type: 'user', value: true})
     const url = getters.endpoints.user
     const options = {
       headers: {
@@ -121,12 +151,12 @@ const actions = {
         type: 'is-danger'
       })
     } finally {
-      dispatch('setLoading', {group: 'user', type: 'list', value: false})
+      dispatch('setLoading', {group: 'ldap', type: 'user', value: false})
     }
   },
   async disableUser ({getters, dispatch}, username) {
     console.log('admin.disableUser action')
-    dispatch('setWorking', {group: 'user', type: 'disable', value: true})
+    dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username + '/disable'
     const options = {
       method: 'POST',
@@ -150,12 +180,12 @@ const actions = {
         type: 'is-danger'
       })
     } finally {
-      dispatch('setWorking', {group: 'user', type: 'disable', value: false})
+      dispatch('setWorking', {group: 'user', type: username, value: false})
     }
   },
   async enableUser ({getters, dispatch}, username) {
     console.log('admin.enableUser action')
-    dispatch('setWorking', {group: 'user', type: 'enable', value: true})
+    dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username + '/enable'
     const options = {
       method: 'POST',
@@ -179,9 +209,9 @@ const actions = {
         type: 'is-danger'
       })
     } finally {
-      dispatch('setWorking', {group: 'user', type: 'enable', value: false})
+      dispatch('setWorking', {group: 'user', type: username, value: false})
     }
-  },
+  }
 }
 
 export default {

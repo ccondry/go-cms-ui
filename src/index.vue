@@ -60,7 +60,8 @@ export default {
   computed: {
     ...mapGetters([
       'isLoggedIn',
-      'isAdmin'
+      'isAdmin',
+      'jwtUser'
     ]),
     atHome () {
       try {
@@ -83,7 +84,7 @@ export default {
       if (val && !oldVal) {
         // user just logged in
         // check if they have an active AD account
-        this.getAccount()
+        this.getUser(this.jwtUser.sub)
       } else if (!val && oldVal) {
         // user just logged out
         // redirect them to SSO
@@ -102,7 +103,7 @@ export default {
     ...mapActions([
       'checkJwt',
       'logout',
-      'getAccount'
+      'getUser'
     ]),
     clickAdmin () {
       this.$router.push({name: 'Admin'}).catch(e => {})

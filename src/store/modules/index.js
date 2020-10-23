@@ -1,11 +1,11 @@
 import app from './app'
-import admin from './admin'
 import user from './user'
 import endpoints from './endpoints'
+import ldap from './ldap'
 
 export default {
   app,
-  admin,
   user,
-  endpoints
+  endpoints,
+  ldap
 }

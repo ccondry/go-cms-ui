@@ -38,34 +38,93 @@
 
         <!-- user has AD account -->
         <div v-if="adUser">
-          <!-- enabled AD account -->
-          <div v-if="adUser.enabled">
-            Your account is created and enabled
-            <br>
-            JWT User
-            <pre>{{ jwtUser }}</pre>
-            <br>
-            Active Directory User
-            <pre>{{ adUser }}</pre>
-            <b-button
-            type="is-danger"
-            rounded
-            @click="clickDisable"
-            >
-              Disable My Account
-            </b-button>
+          <!-- enabled but expired AD account -->
+          <div
+          v-if="expired"
+          style="display: flex;justify-content: center;align-items: center;"
+          >
+            Your account has expired.
           </div>
 
-          <!-- disabled AD account -->
-          <div v-if="!adUser.enabled">
-            Your account is disabled
-            <br>
+          <!-- enabled and not expired AD account -->
+          <div v-if="!expired">
+            Your account will expire {{ expiresFromNow }}
+            <!-- JWT user -->
+            <b-collapse
+            class="card"
+            animation="slide"
+            aria-id="jwt-user"
+            :open="false"
+            >
+              <div
+              slot="trigger" 
+              slot-scope="props"
+              class="card-header"
+              role="button"
+              aria-controls="jwt-user"
+              >
+                <p class="card-header-title">
+                  JWT User
+                </p>
+                <a class="card-header-icon">
+                  <b-icon :icon="props.open ? 'menu-up' : 'menu-down'" />
+                </a>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  <pre>{{ jwtUser }}</pre>
+                </div>
+              </div>
+            </b-collapse>
+
+            <!-- AD user -->
+            <b-collapse
+            class="card"
+            animation="slide"
+            aria-id="jwt-user"
+            :open="false"
+            >
+              <div
+              slot="trigger" 
+              slot-scope="props"
+              class="card-header"
+              role="button"
+              aria-controls="jwt-user"
+              >
+                <p class="card-header-title">
+                  Active Directory User
+                </p>
+                <a class="card-header-icon">
+                  <b-icon :icon="props.open ? 'menu-up' : 'menu-down'" />
+                </a>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  <pre>{{ adUser }}</pre>
+                </div>
+              </div>
+            </b-collapse>
+          </div>
+          <!-- buttons -->
+          <div class="card-content">
             <b-button
+            v-if="expired"
             type="is-success"
             rounded
-            @click="clickEnable"
+            expanded
+            @click="clickExtend"
             >
               Enable My Account
+            </b-button>
+
+            <b-button
+            v-if="!expired"
+            type="is-primary"
+            rounded
+            expanded
+            @click="clickExtend"
+            >
+              Extend My Account
             </b-button>
           </div>
         </div>
@@ -79,12 +138,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import moment from 'moment'
+
 export default {
   data () {
     return {
       password: '',
       passcode: '',
-      dn: ''
+      dn: '',
+      moment
     }
   },
 
@@ -92,29 +154,41 @@ export default {
     ...mapGetters([
       'isLoggedIn',
       'jwtUser',
-      'adUser',
       'loading',
       'working',
-      'isAdmin'
+      'isAdmin',
+      'users'
     ]),
+    adUser () {
+      // match AD user to JWT sub (username)
+      try {
+        return this.users.find(v => v.sAMAccountName === this.jwtUser.sub)
+      } catch (e) {
+        return null
+      }
+    },
+    expires () {
+      return (this.adUser.accountExpires - 116444736000000000) / 10000
+    },
+    expiresFromNow () {
+      return moment(this.expires).fromNow()
+    },
+    expired () {
+      return this.expires <= Date.now()
+    },
     isLoading () {
-      return this.loading.account.get
+      return this.loading.user[this.jwtUser.sub]
     },
     isWorking () {
-      return this.working.user.login ||
-      this.working.account.enable ||
-      this.working.account.create ||
-      this.working.account.disable
+      return this.working.user[this.jwtUser.sub]
     }
   },
 
   methods: {
     ...mapActions([
       'logout',
-      'getAccount',
       'createAccount',
-      'enableAccount',
-      'disableAccount'
+      'extendUser'
     ]),
     clickCreate () {
       this.createAccount({
@@ -123,24 +197,15 @@ export default {
         dn: this.dn
       })
     },
-    clickDisable () {
-      this.disableAccount()
-    },
-    clickEnable () {
-      this.enableAccount()
-    },
     clickAdmin () {
       this.$router.push({name: 'Admin'}).catch(e => {})
     },
     clickLogout () {
       this.logout()
     },
-    // clickgetAccount () {
-    //   this.getAccount()
-    // },
-    // clickCreateAccount () {
-    //   this.createAccount()
-    // }
+    clickExtend () {
+      this.extendUser({username: this.adUser.sAMAccountName})
+    }
   }
 }
 </script>
