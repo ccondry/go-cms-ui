@@ -46,7 +46,7 @@
             :required="true"
             />
           </b-field>
-          <b-field
+          <!-- <b-field
           label="Meeting Passcode"
           label-position="on-border"
           >
@@ -55,7 +55,7 @@
             placeholder="Optional"
             aria-placeholder="Optional"
             />
-          </b-field>
+          </b-field> -->
           <b-button
           type="is-success"
           rounded
