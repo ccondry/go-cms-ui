@@ -39,7 +39,7 @@ const mutations = {
 const actions = {
   // get single AD user
   async getUser ({commit, dispatch, getters}, username) {
-    console.log('admin.getUser action')
+    // console.log('admin.getUser action')
     dispatch('setLoading', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username
     const options = {
@@ -49,7 +49,7 @@ const actions = {
     }
     try {
       const user = await fetch(url, options)
-      console.log('getUser:', user)
+      // console.log('getUser:', user)
       this.commit(types.UPSERT_USERS, [user])
     } catch (e) {
       Toast.open({
@@ -93,7 +93,7 @@ const actions = {
   },
   // delete AD user
   async deleteUser ({dispatch, getters}, username) {
-    console.log('admin.deleteUser action')
+    // console.log('ldap.deleteUser action')
     dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username
     const options = {
@@ -126,7 +126,7 @@ const actions = {
   },
   // get AD users list
   async getUsers ({dispatch, getters}) {
-    console.log('admin.getUsers action')
+    // console.log('ldap.getUsers action')
     // check user active directory user exists
     dispatch('setLoading', {group: 'ldap', type: 'user', value: true})
     const url = getters.endpoints.user
@@ -155,7 +155,7 @@ const actions = {
     }
   },
   async disableUser ({getters, dispatch}, username) {
-    console.log('admin.disableUser action')
+    // console.log('ldap.disableUser action')
     dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username + '/disable'
     const options = {
@@ -184,7 +184,7 @@ const actions = {
     }
   },
   async enableUser ({getters, dispatch}, username) {
-    console.log('admin.enableUser action')
+    // console.log('ldap.enableUser action')
     dispatch('setWorking', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username + '/enable'
     const options = {
