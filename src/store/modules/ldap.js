@@ -115,10 +115,21 @@ const actions = {
       // success - refresh user data
       dispatch('getUser', username)
       // notify user success
-      Toast.open({
-        message: `User account expiration set to ${hour} hours`,
-        type: 'is-success'
-      })
+      if (getters.jwtUser.sub === username) {
+        // this user
+        Toast.open({
+          message: `Your account expiration has been reset to ${hour} hours.`,
+          duration: 4 * 1000,
+          type: 'is-success'
+        })
+      } else {
+        // admin for another user
+        Toast.open({
+          message: `User account expiration set to ${hour} hours`,
+          duration: 4 * 1000,
+          type: 'is-success'
+        })
+      }
     } catch (e) {
       Toast.open({
         message: `Failed to set account expiration: ${e.message}`,
