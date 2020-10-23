@@ -1,10 +1,10 @@
-# Change Log
+# go-cms-ui Change Log
 
-Version numbers are dates in semver-compatible YYYY.MM.DD-X format, where X
-is an optional revision number for that day.
+Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
+where X is the revision number
 
-# 2020.10.19
+
+# 2020.10.23
 
 ### Features
-
-* **Login:** create login page
+* **Created:** Created site and changelog
