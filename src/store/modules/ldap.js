@@ -79,12 +79,12 @@ const actions = {
       dispatch('getUser', username)
       // notify user success
       Toast.open({
-        message: `User account expiration extended by ${hour} hours`,
+        message: `User account expiration set to ${hour} hours`,
         type: 'is-success'
       })
     } catch (e) {
       Toast.open({
-        message: `Failed to extend account expiration: ${e.message}`,
+        message: `Failed to set account expiration: ${e.message}`,
         type: 'is-danger'
       })
     } finally {
