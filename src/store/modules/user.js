@@ -5,6 +5,7 @@ import {
 } from '../../utils'
 import {ToastProgrammatic as Toast} from 'buefy/src'
 import * as types from '../mutation-types'
+import router from '../../router'
 
 // parse a JWT payload into a JSON object
 function parseJwt (token) {
@@ -241,9 +242,15 @@ const actions = {
         }
         dispatch('setWorking', {group: 'user', type: 'login', value: true})
         try {
+          // get JWT from auth code
           const response = await fetch(url, options)
           if (response.jwt) {
+            // save the new JWT
             dispatch('setJwt', response.jwt)
+            // remove SSO code from the current URL query parameters
+            delete query.code
+            delete query.state
+            router.push({query})
           }
         } catch (e) {
           const regex = /^Authorization code is invalid or expired/i
