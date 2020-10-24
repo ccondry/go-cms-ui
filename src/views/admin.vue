@@ -278,6 +278,9 @@ export default {
       return moment(expiresUtc(user)).fromNow()
     },
     convertLdapDate (date) {
+      if (!date) {
+        return 'invalid date'
+      }
       // 2020 10 20 20 25 23.0Z
       const d = new Date()
       d.setUTCFullYear(date.slice(0, 4))
