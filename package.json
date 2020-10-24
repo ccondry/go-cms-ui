@@ -1,6 +1,6 @@
 {
   "name": "go-cms-ui",
-  "version": "2020.10.24",
+  "version": "2020.10.24-1",
   "description": "UI for the dCloud GoCMS instant demo portal",
   "author": "Coty Condry <ccondry@cisco.com>",
   "main": "dist/js/index.common.js",

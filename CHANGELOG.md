@@ -4,6 +4,13 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2020.10.24-1
+
+### Features
+* **Admin:** Show user space info in user table details. Add CCO email column to
+users table.
+
+
 # 2020.10.24
 
 ### Features
