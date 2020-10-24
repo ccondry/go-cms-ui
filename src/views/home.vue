@@ -41,8 +41,8 @@
           >
             <b-input
             v-model="dn"
-            placeholder=""
-            aria-placeholder=""
+            placeholder="Your Phone Number"
+            aria-placeholder="Your Phone Number"
             :required="true"
             />
           </b-field>
