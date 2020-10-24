@@ -60,6 +60,7 @@
           type="is-success"
           rounded
           expanded
+          :disabled="!dn.length || !password.length"
           @click="clickCreate"
           >
             Create GoCMS User
