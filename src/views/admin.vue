@@ -63,6 +63,19 @@
             </a>
           </b-table-column>
 
+          <!-- email -->
+          <b-table-column
+          v-slot="props"
+          field="mail"
+          label="Email"
+          sortable
+          searchable
+          >
+            <a @click="toggle(props.row)">
+              {{ props.row.mail }}
+            </a>
+          </b-table-column>
+
           <!-- call ID -->
           <b-table-column
           v-slot="props"
