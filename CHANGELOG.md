@@ -4,6 +4,13 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2020.10.24
+
+### Features
+* **Create Account:** Press enter to submit the form
+* **Logout:** Remove the logout button
+
+
 # 2020.10.23-3
 
 ### Features
