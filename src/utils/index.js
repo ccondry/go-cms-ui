@@ -75,7 +75,8 @@ export const fetch = async function (url, options = {}) {
     } else {
       let m = text
       try {
-        m = JSON.parse(text).message
+        const json = JSON.parse(text)
+        m = json.message || json.apiError || json[Object.keys(json)[0]]
       } catch (e) {
         const regex = /text\/html/i
         if (response.headers.get('content-type').match(regex)) {
