@@ -29,14 +29,14 @@
       </b-button>
 
       <!-- logout -->
-      <b-button
+      <!-- <b-button
       v-if="isLoggedIn"
       type="is-primary"
       rounded
       @click="clickLogout"
       >
         Log Out
-      </b-button>
+      </b-button> -->
     </div>
 
     <!-- vue-router container -->
