@@ -33,6 +33,7 @@
             :required="true"
             placeholder="A new password, only for GoCMS"
             aria-placeholder="A new password, only for GoCMS"
+            @keydown.enter.native="clickCreate"
             />
           </b-field>
           <b-field
@@ -44,6 +45,7 @@
             placeholder="Your Phone Number"
             aria-placeholder="Your Phone Number"
             :required="true"
+            @keydown.enter.native="clickCreate"
             />
           </b-field>
           <!-- <b-field
@@ -172,11 +174,13 @@ export default {
       'setUserPassword'
     ]),
     clickCreate () {
-      this.createUser({
-        password: this.password,
-        passcode: this.passcode,
-        dn: this.dn
-      })
+      if (this.password.length && this.dn.length) {
+        this.createUser({
+          password: this.password,
+          // passcode: this.passcode,
+          dn: this.dn
+        })
+      }
     },
     clickAdmin () {
       this.$router.push({name: 'Admin'}).catch(e => {})
