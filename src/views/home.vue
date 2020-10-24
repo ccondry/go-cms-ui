@@ -150,7 +150,11 @@ export default {
       'adUser'
     ]),
     expires () {
-      return (this.adUser.accountExpires - 116444736000000000) / 10000
+      try {
+        return (this.adUser.accountExpires - 116444736000000000) / 10000
+      } catch (e) {
+        return 0
+      }
     },
     expiresFromNow () {
       return moment(this.expires).fromNow()
