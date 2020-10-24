@@ -127,28 +127,14 @@
               :active="loading.user[props.row.sAMAccountName] || working.user[props.row.sAMAccountName]"
               :is-full-page="false"
               />
+              
+              <user-space
+              v-if="!isExpired(props.row)"
+              class="content"
+              :user="props.row"
+              />
 
-              <!-- AD user -->
-              <b-collapse
-              :aria-id="`ad-user-${props.row.sAMAccountName}`"
-              class="panel"
-              animation="slide"
-              :open="false"
-              >
-                <div
-                slot="trigger"
-                class="panel-heading"
-                role="button"
-                :aria-controls="`ad-user-${props.row.sAMAccountName}`"
-                >
-                  <strong>Active Directory Details</strong>
-                </div>
-                <div class="panel-block">
-                  <pre>{{ props.row }}</pre>
-                </div>
-              </b-collapse>
-
-              <div class="buttons" style="padding-top: 1rem; float: right;">
+              <div class="buttons" style="padding-top: 1rem; justify-content: flex-end;">
                 <!-- extend -->
                 <b-button
                 type="is-primary"
@@ -201,12 +187,17 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
+import UserSpace from '../components/space'
 
 function expiresUtc (user) {
   return (user.accountExpires - 116444736000000000) / 10000
 }
 
 export default {
+  components: {
+    UserSpace
+  },
+
   data () {
     return {
       moment

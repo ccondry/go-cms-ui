@@ -74,7 +74,7 @@
         <!-- user has AD account -->
         <div v-if="adUser">
           <!-- show CMS cospace info if user not expired -->
-          <user-space v-if="!expired" class="content" />
+          <user-space v-if="!expired" class="content" :user="adUser" />
           <div class="content">
             <!-- buttons -->
             <b-field>

@@ -88,6 +88,13 @@
 import { mapGetters } from 'vuex'
 
 export default {
+  props: {
+    user: {
+      required: true,
+      type: Object
+    }
+  },
+
   data () {
     return {
       docLink: 'http://www.cisco.com/c/en/us/products/collateral/conferencing/meeting-server/datasheet-c78-737519.html'
@@ -100,16 +107,16 @@ export default {
       'demoEnvironment'
     ]),
     callId () {
-      return this.adUser.telephoneNumber
+      return this.user.telephoneNumber
     },
     joinLink () {
       return `https://join.${this.domain}/`
     },
     userAddress () {
-      return this.adUser.userPrincipalName
+      return this.user.userPrincipalName
     },
     domain () {
-      return this.adUser.userPrincipalName.split('@').pop()
+      return this.user.userPrincipalName.split('@').pop()
     },
     didAddress () {
       return `${this.callId}@${this.domain}`
