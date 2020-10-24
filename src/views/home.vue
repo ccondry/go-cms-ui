@@ -58,15 +58,17 @@
             aria-placeholder="Optional"
             />
           </b-field> -->
-          <b-button
-          type="is-success"
-          rounded
-          expanded
-          :disabled="!dn.length || !password.length"
-          @click="clickCreate"
-          >
-            Create GoCMS User
-          </b-button>
+          <div style="padding-top: 1rem;">
+            <b-button
+            type="is-success"
+            rounded
+            expanded
+            :disabled="!dn.length || !password.length"
+            @click="clickCreate"
+            >
+              Create GoCMS User
+            </b-button>
+          </div>
         </div>
 
         <!-- user has AD account -->
