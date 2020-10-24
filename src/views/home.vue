@@ -12,7 +12,7 @@
           Welcome {{ jwtUser.given_name }}!
         </p>
 
-        <p class="subtitle">
+        <p v-if="adUser" class="subtitle">
           <span v-if="expired">
             Your account has expired.
           </span>
