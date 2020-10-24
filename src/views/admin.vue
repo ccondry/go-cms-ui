@@ -130,29 +130,21 @@
 
               <!-- AD user -->
               <b-collapse
-              class="card"
+              :aria-id="`ad-user-${props.row.sAMAccountName}`"
+              class="panel"
               animation="slide"
-              :aria-id="'ad-user-' + props.row.sAMAccountName"
               :open="false"
               >
                 <div
-                slot="trigger" 
-                slot-scope="cprops"
-                class="card-header"
+                slot="trigger"
+                class="panel-heading"
                 role="button"
-                :aria-controls="'ad-user-' + props.row.sAMAccountName"
+                :aria-controls="`ad-user-${props.row.sAMAccountName}`"
                 >
-                  <p class="card-header-title">
-                    Active Directory Attributes
-                  </p>
-                  <a class="card-header-icon">
-                    <b-icon :icon="cprops.open ? 'menu-up' : 'menu-down'" />
-                  </a>
+                  <strong>Active Directory Details</strong>
                 </div>
-                <div class="card-content">
-                  <div class="content">
-                    <pre>{{ props.row }}</pre>
-                  </div>
+                <div class="panel-block">
+                  <pre>{{ props.row }}</pre>
                 </div>
               </b-collapse>
 
