@@ -125,7 +125,7 @@ const actions = {
       } else {
         // admin for another user
         Toast.open({
-          message: `User account expiration set to ${hour} hours`,
+          message: `${username} account expiration set to ${hour} hours`,
           duration: 4 * 1000,
           type: 'is-success'
         })
