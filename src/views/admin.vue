@@ -87,26 +87,7 @@
             {{ props.row.telephoneNumber }}
           </b-table-column>
 
-          <!-- enabled -->
-          <b-table-column
-          v-slot="props"
-          field="enabled"
-          label="Enabled"
-          sortable
-          >
-            {{ props.row.enabled }}
-          </b-table-column>
-
-          <!-- admin -->
-          <!-- <b-table-column
-          v-slot="props"
-          field="admin"
-          label="Admin"
-          sortable
-          >
-            {{ props.row.admin }}
-          </b-table-column> -->
-
+          <!-- expires -->
           <b-table-column
           v-slot="props"
           field="accountExpires"
@@ -116,6 +97,17 @@
             {{ expires(props.row) }}
           </b-table-column>
 
+          <!-- last login -->
+          <b-table-column
+          v-slot="props"
+          field="lastLogonTimestamp"
+          label="Last Login"
+          sortable
+          >
+            {{ convertLdapTimestamp(props.row.lastLogonTimestamp) }}
+          </b-table-column>
+
+          <!-- created -->
           <b-table-column
           v-slot="props"
           field="whenCreated"
@@ -125,6 +117,7 @@
             {{ convertLdapDate(props.row.whenCreated) }}
           </b-table-column>
 
+          <!-- modified -->
           <b-table-column
           v-slot="props"
           field="whenChanged"
@@ -202,8 +195,12 @@ import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 import UserSpace from '../components/space'
 
+function ldap2Utc (ldapTime) {
+  return (ldapTime - 116444736000000000) / 10000
+}
+
 function expiresUtc (user) {
-  return (user.accountExpires - 116444736000000000) / 10000
+  return ldap2Utc(user.accountExpires)
 }
 
 export default {
@@ -247,6 +244,13 @@ export default {
       'setUserExpiration',
       'setUserPassword'
     ]),
+    convertLdapTimestamp (time) {
+      if (time) {
+        return moment(ldap2Utc(time)).fromNow()
+      } else {
+        return 'Never'
+      }
+    },
     isExpired (user) {
       return expiresUtc(user) < Date.now()
     },
