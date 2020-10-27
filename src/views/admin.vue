@@ -10,182 +10,186 @@
         <p class="title">
           Users
         </p>
-        <b-table
-        ref="table"
-        :data="users"
-        :paginated="users.length > 20"
-        per-page="20"
-        detailed
-        :loading="loading.ldap.user"
-        detail-key="sAMAccountName"
-        :show-detail-icon="true"
-        aria-next-label="Next page"
-        aria-previous-label="Previous page"
-        aria-page-label="Page"
-        aria-current-label="Current page"
-        >
-          <!-- <b-loading :active="loading.ldap.user" :is-full-page="false" /> -->
-          <!-- expired icon -->
-          <b-table-column
-          v-slot="props"
-          field="accountExpires"
-          sortable
+        <div class="content">
+          <b-table
+          ref="table"
+          :data="users"
+          :paginated="users.length > 20"
+          per-page="20"
+          detailed
+          :loading="loading.ldap.user"
+          detail-key="sAMAccountName"
+          :show-detail-icon="true"
+          aria-next-label="Next page"
+          aria-previous-label="Previous page"
+          aria-page-label="Page"
+          aria-current-label="Current page"
           >
-            <b-icon
-            v-if="isExpired(props.row)"
-            icon="account-cancel"
-            type="is-danger"
-            />
-          </b-table-column>
-
-          <!-- name -->
-          <b-table-column
-          v-slot="props"
-          field="fullName"
-          label="Name"
-          sortable
-          searchable
-          >
-            <a @click="toggle(props.row)">
-              {{ props.row.fullName }}
-            </a>
-          </b-table-column>
-
-          <!-- username -->
-          <b-table-column
-          v-slot="props"
-          field="sAMAccountName"
-          label="Username"
-          sortable
-          searchable
-          >
-            <a @click="toggle(props.row)">
-              {{ props.row.sAMAccountName }}
-            </a>
-          </b-table-column>
-
-          <!-- email -->
-          <b-table-column
-          v-slot="props"
-          field="mail"
-          label="Email"
-          sortable
-          searchable
-          >
-            <a @click="toggle(props.row)">
-              {{ props.row.mail }}
-            </a>
-          </b-table-column>
-
-          <!-- call ID -->
-          <b-table-column
-          v-slot="props"
-          field="telephoneNumber"
-          label="Call ID"
-          sortable
-          searchable
-          >
-            {{ props.row.telephoneNumber }}
-          </b-table-column>
-
-          <!-- expires -->
-          <b-table-column
-          v-slot="props"
-          field="accountExpires"
-          label="Expires"
-          sortable
-          >
-            {{ expires(props.row) }}
-          </b-table-column>
-
-          <!-- last login -->
-          <b-table-column
-          v-slot="props"
-          field="lastLogonTimestamp"
-          label="Last Login"
-          sortable
-          >
-            {{ convertLdapTimestamp(props.row.lastLogonTimestamp) }}
-          </b-table-column>
-
-          <!-- created -->
-          <b-table-column
-          v-slot="props"
-          field="whenCreated"
-          label="Created"
-          sortable
-          >
-            {{ convertLdapDate(props.row.whenCreated) }}
-          </b-table-column>
-
-          <!-- modified -->
-          <b-table-column
-          v-slot="props"
-          field="whenChanged"
-          label="Modified"
-          sortable
-          >
-            {{ convertLdapDate(props.row.whenChanged) }}
-          </b-table-column>
-
-          <template slot="detail" slot-scope="props">
-            <div class="content" style="position: relative;">
-              <b-loading
-              :active="loading.user[props.row.sAMAccountName] || working.user[props.row.sAMAccountName]"
-              :is-full-page="false"
+            <!-- <b-loading :active="loading.ldap.user" :is-full-page="false" /> -->
+            <!-- expired icon -->
+            <b-table-column
+            v-slot="props"
+            field="accountExpires"
+            sortable
+            >
+              <b-icon
+              v-if="isExpired(props.row)"
+              icon="account-cancel"
+              type="is-danger"
               />
-              
-              <user-space
-              v-if="!isExpired(props.row)"
-              class="content"
-              :user="props.row"
-              />
+            </b-table-column>
 
-              <div class="buttons" style="padding-top: 1rem; justify-content: flex-end;">
-                <!-- extend -->
-                <b-button
-                type="is-primary"
-                rounded
-                :disabled="working.user[props.row.sAMAccountName]"
-                @click="clicksetUserExpiration(props.row)"
-                >
-                  Extend Expiration
-                </b-button>
+            <!-- name -->
+            <b-table-column
+            v-slot="props"
+            field="fullName"
+            label="Name"
+            sortable
+            searchable
+            >
+              <a @click="toggle(props.row)">
+                {{ props.row.fullName }}
+              </a>
+            </b-table-column>
 
-                <!-- expire -->
-                <b-button
+            <!-- username -->
+            <b-table-column
+            v-slot="props"
+            field="sAMAccountName"
+            label="Username"
+            sortable
+            searchable
+            >
+              <a @click="toggle(props.row)">
+                {{ props.row.sAMAccountName }}
+              </a>
+            </b-table-column>
+
+            <!-- email -->
+            <b-table-column
+            v-slot="props"
+            field="mail"
+            label="Email"
+            sortable
+            searchable
+            >
+              <a @click="toggle(props.row)">
+                {{ props.row.mail }}
+              </a>
+            </b-table-column>
+
+            <!-- call ID -->
+            <b-table-column
+            v-slot="props"
+            field="telephoneNumber"
+            label="Call ID"
+            sortable
+            searchable
+            >
+              {{ props.row.telephoneNumber }}
+            </b-table-column>
+
+            <!-- expires -->
+            <b-table-column
+            v-slot="props"
+            field="accountExpires"
+            label="Expires"
+            sortable
+            >
+              {{ expires(props.row) }}
+            </b-table-column>
+
+            <!-- last login -->
+            <b-table-column
+            v-slot="props"
+            field="lastLogonTimestamp"
+            label="Last Login"
+            sortable
+            >
+              {{ convertLdapTimestamp(props.row.lastLogonTimestamp) }}
+            </b-table-column>
+
+            <!-- created -->
+            <b-table-column
+            v-slot="props"
+            field="whenCreated"
+            label="Created"
+            sortable
+            >
+              {{ convertLdapDate(props.row.whenCreated) }}
+            </b-table-column>
+
+            <!-- modified -->
+            <b-table-column
+            v-slot="props"
+            field="whenChanged"
+            label="Modified"
+            sortable
+            >
+              {{ convertLdapDate(props.row.whenChanged) }}
+            </b-table-column>
+
+            <template slot="detail" slot-scope="props">
+              <div class="content" style="position: relative;">
+                <b-loading
+                :active="loading.user[props.row.sAMAccountName] || working.user[props.row.sAMAccountName]"
+                :is-full-page="false"
+                />
+                
+                <user-space
                 v-if="!isExpired(props.row)"
-                type="is-warning"
-                rounded
-                :disabled="working.user[props.row.sAMAccountName]"
-                @click="clickExpireUser(props.row)"
-                >
-                  Expire Now
-                </b-button>
+                class="content"
+                :user="props.row"
+                />
 
-                <!-- reset password -->
-                <b-button
-                type="is-info"
-                rounded
-                :disabled="working.user[props.row.sAMAccountName]"
-                @click="clickResetPassword(props.row)"
-                >
-                  Reset Password
-                </b-button>
+                <div class="buttons" style="padding-top: 1rem; justify-content: flex-end;">
+                  <!-- extend -->
+                  <b-button
+                  type="is-primary"
+                  rounded
+                  :disabled="working.user[props.row.sAMAccountName]"
+                  @click="clicksetUserExpiration(props.row)"
+                  >
+                    Extend Expiration
+                  </b-button>
 
-                <!-- delete -->
-                <b-button
-                type="is-danger"
-                rounded
-                :disabled="working.user[props.row.sAMAccountName]"
-                @click="clickDeleteUser(props.row)"
-                >
-                  Delete
-                </b-button>
+                  <!-- expire -->
+                  <b-button
+                  v-if="!isExpired(props.row)"
+                  type="is-warning"
+                  rounded
+                  :disabled="working.user[props.row.sAMAccountName]"
+                  @click="clickExpireUser(props.row)"
+                  >
+                    Expire Now
+                  </b-button>
+
+                  <!-- reset password -->
+                  <b-button
+                  type="is-info"
+                  rounded
+                  :disabled="working.user[props.row.sAMAccountName]"
+                  @click="clickResetPassword(props.row)"
+                  >
+                    Reset Password
+                  </b-button>
+
+                  <!-- delete -->
+                  <b-button
+                  type="is-danger"
+                  rounded
+                  :disabled="working.user[props.row.sAMAccountName]"
+                  @click="clickDeleteUser(props.row)"
+                  >
+                    Delete
+                  </b-button>
+                </div>
               </div>
-            </div>
-          </template>
-        </b-table>
+            </template>
+          </b-table>
+        </div>
+        <!-- copyright and version -->
+        <app-footer />
       </article>
     </div>
   </section>
@@ -195,6 +199,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 import UserSpace from '../components/space'
+import AppFooter from '../components/app-footer'
 
 function ldap2Utc (ldapTime) {
   return (ldapTime - 116444736000000000) / 10000
@@ -206,7 +211,8 @@ function expiresUtc (user) {
 
 export default {
   components: {
-    UserSpace
+    UserSpace,
+    AppFooter
   },
 
   data () {

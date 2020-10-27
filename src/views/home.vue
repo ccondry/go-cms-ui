@@ -104,6 +104,9 @@
               </b-button>
             </b-field>
           </div>
+
+          <!-- copyright and version -->
+          <app-footer />
         </div>
       </article>
 
@@ -117,10 +120,12 @@
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 import UserSpace from '../components/space'
+import AppFooter from '../components/app-footer'
 
 export default {
   components: {
-    UserSpace
+    UserSpace,
+    AppFooter
   },
 
   data () {

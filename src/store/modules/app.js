@@ -2,6 +2,7 @@ import * as types from '../mutation-types'
 import Vue from 'vue'
 import {ToastProgrammatic as Toast} from 'buefy/src'
 import {addUrlQueryParams} from '../../utils'
+import {version} from '../../../package.json'
 
 const state = {
   loading: {
@@ -17,14 +18,18 @@ const state = {
     ldap: {}
   },
   isProduction: process.env.NODE_ENV === 'production',
-  demoEnvironment: {}
+  demoEnvironment: {},
+  uiVersion: version,
+  apiVersion: 'Loading...'
 }
 
 const getters = {
   isProduction: state => state.isProduction,
   loading: state => state.loading,
   working: state => state.working,
-  demoEnvironment: state => state.demoEnvironment
+  demoEnvironment: state => state.demoEnvironment,
+  uiVersion: state => state.uiVersion,
+  apiVersion: state => state.demoEnvironment.version
 }
 
 const mutations = {
