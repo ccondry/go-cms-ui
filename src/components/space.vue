@@ -24,7 +24,6 @@
             <strong><a :href="joinLink">{{ joinLink }}</a></strong>
           </li>
           <li>Call ID: <strong>{{ callId }}</strong></li>
-          <li>Passcode: {{ passcode }}</li>
         </ul>
       </div>
     </b-collapse>
@@ -77,7 +76,6 @@
         <ul style="list-style: none;">
           <li>Dial <strong>{{ did }}</strong></li>
           <li>Enter call ID <strong>{{ callId }}</strong>, followed by <strong>#</strong></li>
-          <li>Enter passcode {{ passcode }}, followed by <strong>#</strong></li>
         </ul>
       </div>
     </b-collapse>
@@ -123,9 +121,6 @@ export default {
     },
     did () {
       return this.demoEnvironment.did
-    },
-    passcode () {
-      return '<your passcode>'
     }
   }
 }

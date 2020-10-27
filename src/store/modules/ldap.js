@@ -203,14 +203,14 @@ const actions = {
       dispatch('setLoading', {group: 'ldap', type: 'user', value: false})
     }
   },
-  async createUser ({dispatch, getters}, {dn, password, passcode}) {
+  async createUser ({dispatch, getters}, {dn, password}) {
     console.log('ldap.createUser action')
     dispatch('setWorking', {group: 'user', type: getters.jwtUser.sub, value: true})
 
     const url = getters.endpoints.user
     const options = {
       method: 'POST',
-      body: {dn, password, passcode},
+      body: {dn, password},
       headers: {
         Authorization: 'Bearer ' + getters.jwt
       }

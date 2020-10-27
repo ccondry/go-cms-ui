@@ -48,16 +48,6 @@
             @keydown.enter.native="clickCreate"
             />
           </b-field>
-          <!-- <b-field
-          label="Meeting Passcode"
-          label-position="on-border"
-          >
-            <b-input
-            v-model="passcode"
-            placeholder="Optional"
-            aria-placeholder="Optional"
-            />
-          </b-field> -->
           <div style="padding-top: 1rem;">
             <b-button
             type="is-success"
@@ -135,7 +125,6 @@ export default {
   data () {
     return {
       password: '',
-      passcode: '',
       dn: '',
       moment
     }
@@ -183,7 +172,6 @@ export default {
       if (this.password.length && this.dn.length) {
         this.createUser({
           password: this.password,
-          // passcode: this.passcode,
           dn: this.dn
         })
       }
