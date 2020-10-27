@@ -4,6 +4,17 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2020.10.26-1
+
+### Features
+* **Footer:** Add version and copyright information footer
+* **Style:** Increase the box shadow and add a border to the main content panels
+to improve the visuals a bit
+
+### Bug Fixes
+* **Token Expiration:** Fix refresh loop when JWT has expired
+
+
 # 2020.10.26
 
 ### Features
