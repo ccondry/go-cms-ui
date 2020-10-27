@@ -98,7 +98,7 @@
               type="is-info"
               rounded
               expanded
-              @click="clicksetUserPassword"
+              @click="clickSetUserPassword"
               >
                 Reset My Password
               </b-button>
@@ -191,7 +191,7 @@ export default {
     clickExtend () {
       this.setUserExpiration({username: this.adUser.sAMAccountName, hour: 12})
     },
-    clicksetUserPassword () {
+    clickSetUserPassword () {
       this.$buefy.dialog.prompt({
         title: 'Reset Password',
         message: 'Choose your new password',
