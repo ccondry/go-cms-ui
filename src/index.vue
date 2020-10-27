@@ -122,14 +122,17 @@ export default {
 // hide scroll bar
 html, body {
   overflow-y: auto !important;
+  background-image: url(./assets/images/sign_in_background.jpg);
+  // background-position: 0 0;
+  background-position: 50%;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 // make container fill viewport
 #main-container {
   height: 100vh;
-  background-image: url(./assets/images/sign_in_background.jpg);
-  background-position: 0 0;
-  background-size: cover;
   padding-top: 1rem;
   padding-left: 0;
   padding-right: 0;
