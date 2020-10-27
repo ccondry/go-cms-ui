@@ -5,6 +5,7 @@
       <article
       v-if="isLoggedIn"
       class="tile is-child is-white flex-container box"
+      style="box-shadow: 0 2rem 1rem rgba(0,0,0,.2); border: 1px solid rgb(204, 204, 204);"
       >
         <p class="title">
           Users
