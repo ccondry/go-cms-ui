@@ -67,7 +67,6 @@ const actions = {
     commit(types.SET_LOADING, {group, type, value})
   },
   async getDemoEnvironment ({commit, dispatch, getters}) {
-    console.log('get demo environment...')
     // get system environment info
     dispatch('setLoading', {group: 'app', type: 'demo', value: true})
     try {
