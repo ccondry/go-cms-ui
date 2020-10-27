@@ -110,13 +110,27 @@ const actions = {
     // if we found a token, check the web service to see if it's still valid
     if (jwt !== null && jwt.length > 40) {
       console.log('found existing JWT in localStorage')
-      // store JWT in state
-      dispatch('setJwt', jwt)
+      // check jwt is valid
+      const url = getters.endpoints.validLogin
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + jwt
+        }
+      }
+      try {
+        await dispatch('fetch', {url, options})
+        // store JWT in state
+        dispatch('setJwt', jwt)
+      } catch (e) {
+        // unexpected error, like network error or 500 error
+        Toast.open({
+          message: 'Failed to check get your CMS user information: ' + e.message,
+          duration: 8 * 1000,
+          type: 'is-danger'
+        })
+      }
     } else {
-      // Toast.open({
-      //   message: getters.ssoUrl,
-      //   duration: 200000
-      // })
       // get current URL query params
       const query = getUrlQueryParams()
       if (query.code) {
@@ -130,7 +144,7 @@ const actions = {
         dispatch('setWorking', {group: 'user', type: 'login', value: true})
         try {
           // get JWT from auth code
-          const response = await fetch(url, options)
+          const response = await dispatch('fetch', {url, options})
           if (response.jwt) {
             // save the new JWT. user is now logged in.
             dispatch('setJwt', response.jwt)

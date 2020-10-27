@@ -49,7 +49,7 @@ const actions = {
         },
         body: {username, password}
       }
-      await fetch(url, options)
+      await dispatch('fetch', {url, options})
       dispatch('getUser', username)
       // this user setting their own password?
       if (getters.jwtUser.sub === username) {
@@ -85,7 +85,7 @@ const actions = {
       }
     }
     try {
-      const user = await fetch(url, options)
+      const user = await dispatch('fetch', {url, options})
       // console.log('getUser:', user)
       this.commit(types.UPSERT_USERS, [user])
     } catch (e) {
@@ -111,7 +111,7 @@ const actions = {
       body: {hour}
     }
     try {
-      await fetch(url, options)
+      await dispatch('fetch', {url, options})
       // success - refresh user data
       dispatch('getUser', username)
       // notify user success
@@ -153,7 +153,7 @@ const actions = {
     }
     try {
       // remove user from AD
-      await fetch(url, options)
+      await dispatch('fetch', {url, options})
       // remove user from state
       this.commit(types.REMOVE_USER, username)
       // notify user
@@ -185,7 +185,7 @@ const actions = {
       }
     }
     try {
-      const users = await fetch(url, options)
+      const users = await dispatch('fetch', {url, options})
       console.log('getUsers:', users)
       this.commit(types.SET_USERS, users)
       // Toast.open({
@@ -216,7 +216,7 @@ const actions = {
       }
     }
     try {
-      await fetch(url, options)
+      await dispatch('fetch', {url, options})
       dispatch('getUser', getters.jwtUser.sub)
       Toast.open({
         message: 'Successfully created your user account',

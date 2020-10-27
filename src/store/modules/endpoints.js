@@ -5,7 +5,8 @@ const getters = {
       sso: `${urlBase}/sso`,
       users: `${urlBase}/users`,
       user: `${urlBase}/user`,
-      demo: `${urlBase}/demo`
+      demo: `${urlBase}/demo`,
+      validLogin: `${urlBase}/valid`
     }
   },
   defaultRestOptions: (state, getters) => {
