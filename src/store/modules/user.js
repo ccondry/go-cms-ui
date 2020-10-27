@@ -105,72 +105,74 @@ const actions = {
     dispatch('unsetJwt')
   },
   async checkJwt ({dispatch, getters}) {
-    // check jwt in browser local storage
-    const jwt = window.localStorage.getItem('jwt')
-    // if we found a token, check the web service to see if it's still valid
-    if (jwt !== null && jwt.length > 40) {
-      console.log('found existing JWT in localStorage')
-      // check jwt is valid
-      const url = getters.endpoints.validLogin
+    // check if we have an SSO auth code to use first - that is priority over
+    // existing JWT in localStorage
+    // get current URL query params
+    const query = getUrlQueryParams()
+    if (query.code) {
+      // has SSO auth code - send to REST API to get JWT
+      const url = getters.endpoints.sso
+      // pass our current URL query params to REST API
       const options = {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + jwt
-        }
+        method: 'POST',
+        body: query
       }
+      dispatch('setWorking', {group: 'user', type: 'login', value: true})
       try {
-        await dispatch('fetch', {url, options})
-        // store JWT in state
-        dispatch('setJwt', jwt)
+        // get JWT from auth code
+        const response = await dispatch('fetch', {url, options})
+        if (response.jwt) {
+          // save the new JWT. user is now logged in.
+          dispatch('setJwt', response.jwt)
+          // remove SSO code from the current URL query parameters
+          delete query.code
+          delete query.state
+          router.push({query})
+        }
       } catch (e) {
-        // unexpected error, like network error or 500 error
-        Toast.open({
-          message: 'Failed to check get your CMS user information: ' + e.message,
-          duration: 8 * 1000,
-          type: 'is-danger'
-        })
+        const regex = /^Authorization code is invalid or expired/i
+        if (e.status === 400 && e.text.match(regex)) {
+          // expired SSO auth code - send user back to SSO login
+          window.location = getters.ssoUrl
+        } else {
+          // unexpected SSO error - display to user
+          Toast.open({
+            message: e.message,
+            duration: 10 * 1000,
+            type: 'is-danger'
+          })
+        }
+      } finally {
+        dispatch('setWorking', {group: 'user', type: 'login', value: false})
       }
     } else {
-      // get current URL query params
-      const query = getUrlQueryParams()
-      if (query.code) {
-        // has SSO auth code - send to REST API to get JWT
-        const url = getters.endpoints.sso
-        // pass our current URL query params to REST API
+      // check jwt in browser local storage
+      const jwt = window.localStorage.getItem('jwt')
+      // if we found a token, check the web service to see if it's still valid
+      if (jwt !== null && jwt.length > 40) {
+        console.log('found existing JWT in localStorage')
+        // check jwt is valid
+        const url = getters.endpoints.validLogin
         const options = {
-          method: 'POST',
-          body: query
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + jwt
+          }
         }
-        dispatch('setWorking', {group: 'user', type: 'login', value: true})
         try {
-          // get JWT from auth code
-          const response = await dispatch('fetch', {url, options})
-          if (response.jwt) {
-            // save the new JWT. user is now logged in.
-            dispatch('setJwt', response.jwt)
-            // remove SSO code from the current URL query parameters
-            delete query.code
-            delete query.state
-            router.push({query})
-          }
+          await dispatch('fetch', {url, options})
+          // store JWT in state
+          dispatch('setJwt', jwt)
         } catch (e) {
-          const regex = /^Authorization code is invalid or expired/i
-          if (e.status === 400 && e.text.match(regex)) {
-            // expired SSO auth code - send user back to SSO login
-            window.location = getters.ssoUrl
-          } else {
-            // unexpected SSO error - display to user
-            Toast.open({
-              message: e.message,
-              duration: 10 * 1000,
-              type: 'is-danger'
-            })
-          }
-        } finally {
-          dispatch('setWorking', {group: 'user', type: 'login', value: false})
+          // unexpected error, like network error or 500 error
+          Toast.open({
+            message: 'Failed to check get your CMS user information: ' + e.message,
+            duration: 8 * 1000,
+            type: 'is-danger'
+          })
         }
       } else {
-        // no SSO auth code - send user to SSO login
+        // no JWT - send user to SSO login
         window.location = getters.ssoUrl
       }
     }
