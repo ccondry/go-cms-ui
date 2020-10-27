@@ -4,6 +4,16 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2020.10.26
+
+### Features
+* **Passcode:** Removed passcode input and display
+* **Admin:** Replace "Enabled" column of users table with "Last Login"
+
+### Bug Fixes
+* **Token Expiration:** Replace SSO token when it has expired
+
+
 # 2020.10.24-1
 
 ### Features
