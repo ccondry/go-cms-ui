@@ -1,6 +1,7 @@
 # go-cms-ui
-The dCloud GoCMS web portal UI project. It is built on Momentum-UI and
-Vue.js 2.6 (including vue-router and vuex), using Webpack 4.
+The dCloud GoCMS web portal UI project. It is built on Buefy and
+Vue.js 2.6 (including vue-router and vuex), using Webpack 4, with Cisco fonts
+and colors from momentum-ui.
 
 ## Development
 ### Usage
