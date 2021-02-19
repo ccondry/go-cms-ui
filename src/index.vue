@@ -28,6 +28,16 @@
         Home
       </b-button>
 
+      <!-- logout button -->
+      <b-button
+      v-if="isLoggedIn"
+      type="is-info"
+      rounded
+      @click="clickLogout"
+      >
+        Logout
+      </b-button>
+
       <!-- logout -->
       <!-- <b-button
       v-if="isLoggedIn"
