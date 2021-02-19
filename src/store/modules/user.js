@@ -36,7 +36,7 @@ const getters = {
   },
   adUser: (state, getters) => {
     try {
-      return getters.users.find(v => v.sAMAccountName === getters.jwtUser.sub)
+      return getters.users.find(v => v.sAMAccountName === getters.jwtUser.sAMAccountName)
     } catch (e) {
       return null
     }
