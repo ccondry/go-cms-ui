@@ -52,7 +52,7 @@ const actions = {
       await dispatch('fetch', {url, options})
       dispatch('getUser', username)
       // this user setting their own password?
-      if (getters.jwtUser.sub === username) {
+      if (getters.jwtUser.sAMAccountName === username) {
         Toast.open({
           message: 'Your password has been changed.',
           type: 'is-success'
@@ -76,7 +76,7 @@ const actions = {
   },
   // get single AD user
   async getUser ({commit, dispatch, getters}, username) {
-    // console.log('admin.getUser action')
+    console.log('ldap.getUser', username)
     dispatch('setLoading', {group: 'user', type: username, value: true})
     const url = getters.endpoints.user + '/' + username
     const options = {
@@ -115,7 +115,7 @@ const actions = {
       // success - refresh user data
       dispatch('getUser', username)
       // notify user success
-      if (getters.jwtUser.sub === username) {
+      if (getters.jwtUser.sAMAccountName === username) {
         // this user
         Toast.open({
           message: `Your account expiration has been reset to ${hour} hours.`,
@@ -205,7 +205,7 @@ const actions = {
   },
   async createUser ({dispatch, getters}, {dn, password}) {
     console.log('ldap.createUser action')
-    dispatch('setWorking', {group: 'user', type: getters.jwtUser.sub, value: true})
+    dispatch('setWorking', {group: 'user', type: getters.jwtUser.sAMAccountName, value: true})
 
     const url = getters.endpoints.user
     const options = {
@@ -217,7 +217,7 @@ const actions = {
     }
     try {
       await dispatch('fetch', {url, options})
-      dispatch('getUser', getters.jwtUser.sub)
+      dispatch('getUser', getters.jwtUser.sAMAccountName)
       Toast.open({
         message: 'Successfully created your user account',
         type: 'is-success'
@@ -229,7 +229,7 @@ const actions = {
         type: 'is-danger'
       })
     } finally {
-      dispatch('setWorking', {group: 'user', type: getters.jwtUser.sub, value: false})
+      dispatch('setWorking', {group: 'user', type: getters.jwtUser.sAMAccountName, value: false})
     }
   }
 }

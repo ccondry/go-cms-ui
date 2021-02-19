@@ -160,10 +160,10 @@ export default {
       return this.expires <= Date.now()
     },
     isLoading () {
-      return this.loading.user[this.jwtUser.sub]
+      return this.loading.user[this.jwtUser.sAMAccountName]
     },
     isWorking () {
-      return this.working.user[this.jwtUser.sub]
+      return this.working.user[this.jwtUser.sAMAccountName]
     }
   },
 
@@ -204,7 +204,7 @@ export default {
         rounded: true,
         onConfirm: (password) => {
           this.setUserPassword({
-            username: this.jwtUser.sub,
+            username: this.jwtUser.sAMAccountName,
             password
           })
         },

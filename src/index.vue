@@ -84,7 +84,7 @@ export default {
       if (val && !oldVal) {
         // user just logged in
         // check if they have an active AD account
-        this.getUser(this.jwtUser.sub)
+        this.getUser(this.jwtUser.sAMAccountName)
       } else if (!val && oldVal) {
         // user just logged out
         // redirect them to SSO
