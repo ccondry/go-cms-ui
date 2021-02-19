@@ -1,7 +1,6 @@
 import {
   addUrlQueryParams,
-  getUrlQueryParams,
-  fetch
+  getUrlQueryParams
 } from '../../utils'
 import {ToastProgrammatic as Toast} from 'buefy/src'
 import * as types from '../mutation-types'
