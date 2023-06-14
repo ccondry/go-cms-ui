@@ -129,7 +129,7 @@ const actions = {
       type: 'user',
       message: 'get users list',
       url: getters.endpoints.user,
-      showNotification: true,
+      showNotification: false,
       mutation: types.SET_USERS
     })
   },
