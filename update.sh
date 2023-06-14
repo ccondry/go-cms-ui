@@ -17,17 +17,17 @@ else
   git pull
   # check if git pull worked
   if [ $? -eq 0 ]; then
-    echo "running yarn"
-    yarn
+    echo "running npm i"
+    npm i
     if [ $? -eq 0 ]; then
-      echo "running yarn build..."
-      yarn build
+      echo "running npm run build..."
+      npm run build
       while [ $? != 0 ]
       do
         echo "failed to build go-cms-ui website files. trying again..."
-        yarn build
+        npm run build
       done
-      echo "yarn build successful. copying dist files to www folder..."
+      echo "npm run build successful. copying dist files to www folder..."
       cp -rf dist/* /var/www/html/go-cms-ui/
       if [ $? -eq 0 ]; then
         echo "successfully installed go-cms-ui website files"
@@ -35,7 +35,7 @@ else
         echo "failed to install go-cms-ui website files"
       fi
     else
-      echo "yarn failed. help me."
+      echo "npm i failed. help me."
     fi
   else
     echo "failed to pull repo. help me."

@@ -1,15 +1,15 @@
 #!/bin/sh
-echo "running yarn"
-yarn
+echo "running npm i"
+npm i
 if [ $? -eq 0 ]; then
-  echo "running yarn build..."
-  yarn build
+  echo "running npm run build..."
+  npm run build
   while [ $? != 0 ]
   do
     echo "failed to build go-cms-ui website files. trying again..."
-    yarn build
+    npm run build
   done
-  echo "yarn build successful. copying dist files to www folder..."
+  echo "npm run build successful. copying dist files to www folder..."
   mkdir -p /var/www/html/go-cms-ui
   cp -rf dist/* /var/www/html/go-cms-ui/
   if [ $? -eq 0 ]; then
@@ -18,5 +18,5 @@ if [ $? -eq 0 ]; then
     echo "failed to install go-cms-ui website files"
   fi
 else
-  echo "yarn failed"
+  echo "npm i failed"
 fi
