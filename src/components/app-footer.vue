@@ -7,7 +7,7 @@
       API Version {{ apiVersion }}
     </small>
     <small>
-      © 2020 Cisco and/or its affiliates. All rights reserved.
+      © 2023 Cisco and/or its affiliates. All rights reserved.
     </small>
     <cisco-logo style="width: 4rem; height: 4rem;" />
   </div>
@@ -15,7 +15,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CiscoLogo from '../components/cisco-logo'
+import CiscoLogo from 'src/components/cisco-logo.vue'
 
 export default {
   components: {

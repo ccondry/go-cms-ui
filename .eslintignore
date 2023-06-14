@@ -1,3 +1,1 @@
-node_modules
-lib
-*.md
+build/build.js

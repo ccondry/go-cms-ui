@@ -1,6 +1,7 @@
 <template>
   <section class="main">
     <div class="is-parent">
+      <!-- <pre>{{users}}</pre> -->
       <!-- logged in -->
       <article
       v-if="isLoggedIn"
@@ -42,13 +43,13 @@
             <!-- name -->
             <b-table-column
             v-slot="props"
-            field="fullName"
+            field="full_name"
             label="Name"
             sortable
             searchable
             >
               <a @click="toggle(props.row)">
-                {{ props.row.fullName }}
+                {{ props.row.cn }}
               </a>
             </b-table-column>
 
@@ -131,6 +132,7 @@
 
             <template slot="detail" slot-scope="props">
               <div class="content" style="position: relative;">
+                <!-- <pre>{{props.row}}</pre> -->
                 <b-loading
                 :active="loading.user[props.row.sAMAccountName] || working.user[props.row.sAMAccountName]"
                 :is-full-page="false"
@@ -198,8 +200,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
-import UserSpace from '../components/space'
-import AppFooter from '../components/app-footer'
+import UserSpace from 'src/components/space.vue'
+import AppFooter from 'src/components/app-footer.vue'
 
 function ldap2Utc (ldapTime) {
   return (ldapTime - 116444736000000000) / 10000

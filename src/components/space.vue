@@ -101,7 +101,6 @@ export default {
 
   computed: {
     ...mapGetters([
-      'adUser',
       'demoEnvironment'
     ]),
     callId () {

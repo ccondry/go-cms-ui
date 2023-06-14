@@ -64,14 +64,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   computed: {
     ...mapGetters([
       'isLoggedIn',
       'isAdmin',
-      'jwtUser'
+      'user'
     ]),
     atHome () {
       try {
@@ -94,11 +94,11 @@ export default {
       if (val && !oldVal) {
         // user just logged in
         // check if they have an active AD account
-        this.getUser(this.jwtUser.sAMAccountName)
+        this.getUser(this.user.sAMAccountName)
       } else if (!val && oldVal) {
         // user just logged out
         // redirect them to SSO
-        this.checkJwt()
+        this.login()
       }
     }
   },
@@ -106,12 +106,16 @@ export default {
   mounted () {
     // try to find and validate user's JWT from localStorage,
     // or start the SSO login process to get one
-    this.checkJwt()
+    this.checkLogin()
+    // get environment info
+    this.getDemoEnvironment()
   },
 
   methods: {
     ...mapActions([
-      'checkJwt',
+      'checkLogin',
+      'getDemoEnvironment',
+      'login',
       'logout',
       'getUser'
     ]),
@@ -132,7 +136,7 @@ export default {
 // hide scroll bar
 html, body {
   overflow-y: auto !important;
-  background-image: url(./assets/images/sign_in_background.jpg);
+  background-image: url(assets/images/sign_in_background.jpg);
   // background-position: 0 0;
   background-position: 50%;
   background-size: cover;

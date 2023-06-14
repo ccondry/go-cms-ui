@@ -1,5 +1,7 @@
 <template>
   <section class="main">
+    <!-- users<pre>{{users}}</pre>
+    adUser<pre>{{adUser}}</pre> -->
     <!-- main content -->
     <div class="is-parent">
       <!-- logged in -->
@@ -10,7 +12,7 @@
       > 
         <!-- title -->
         <p class="title">
-          Welcome {{ jwtUser.given_name }}!
+          Welcome {{ user.first_name }}!
         </p>
 
         <p v-if="adUser" class="subtitle">
@@ -119,8 +121,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
-import UserSpace from '../components/space'
-import AppFooter from '../components/app-footer'
+import UserSpace from 'src/components/space.vue'
+import AppFooter from 'src/components/app-footer.vue'
 
 export default {
   components: {
@@ -139,7 +141,7 @@ export default {
   computed: {
     ...mapGetters([
       'isLoggedIn',
-      'jwtUser',
+      'user',
       'loading',
       'working',
       'isAdmin',
@@ -160,10 +162,10 @@ export default {
       return this.expires <= Date.now()
     },
     isLoading () {
-      return this.loading.user[this.jwtUser.sAMAccountName]
+      return this.loading.user[this.user.sAMAccountName]
     },
     isWorking () {
-      return this.working.user[this.jwtUser.sAMAccountName]
+      return this.working.user[this.user.sAMAccountName]
     }
   },
 
@@ -189,7 +191,11 @@ export default {
       this.logout()
     },
     clickExtend () {
-      this.setUserExpiration({username: this.adUser.sAMAccountName, hour: 12})
+      try {
+        this.setUserExpiration({username: this.adUser.sAMAccountName, hour: 12})
+      } catch (e) {
+        console.log(e)
+      }
     },
     clickSetUserPassword () {
       this.$buefy.dialog.prompt({
@@ -204,7 +210,7 @@ export default {
         rounded: true,
         onConfirm: (password) => {
           this.setUserPassword({
-            username: this.jwtUser.sAMAccountName,
+            username: this.user.sAMAccountName,
             password
           })
         },

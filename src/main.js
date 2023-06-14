@@ -1,23 +1,22 @@
 import Vue from 'vue'
-import App from './index.vue'
-import store from './store'
-import router from './router'
-import VueRouter from 'vue-router'
+import App from './App.vue'
+import i18n from './i18n'
+import Buefy from 'buefy'
+// import 'buefy/dist/buefy.css'
+import './styles/app.css'
 import './style.scss'
-
-// use 'buefy/src' when running from git,
-import Buefy from 'buefy/src'
-// or use 'buefy' when running from npm
-// import Buefy from 'buefy'
-
-// add Buefy to Vue
-Vue.use(Buefy)
+import router from './router'
+import store from './store'
+import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
+Vue.use(Buefy)
 
-new Vue({
-  // el: '#app',
-  render: h => h(App),
+const app = new Vue({
+  render: (h) => h(App),
+  i18n,
   router,
   store
-}).$mount('#app')
+})
+
+app.$mount('#app')
