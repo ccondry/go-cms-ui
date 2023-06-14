@@ -4,6 +4,19 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2023.6.14-1
+
+### Fixes
+* **Login:** Fix multiple login issues.
+
+
+# 2023.6.14
+
+### Features
+* **Build:** Replace webpack build tools with rollup, update SSO provider.
+* **Login:** Update SSO login provider.
+
+
 # 2021.2.19
 
 ### Features
