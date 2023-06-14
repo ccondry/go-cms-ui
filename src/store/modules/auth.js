@@ -139,7 +139,7 @@ const actions = {
     console.log('logging out user')
     dispatch('unsetJwt')
   },
-  async doSsoLogin ({commit, dispatch, getters}) {
+  async doSsoLogin ({commit, dispatch, getters}, query) {
     // don't run this more than once concurrently
     if (getters.isLoggingIn) {
       return
@@ -175,10 +175,9 @@ const actions = {
     const route = router.app._route
     // copy query object
     const query = JSON.parse(JSON.stringify(route.query))
-    console.log('route query', query)
     // is user completing SSO login right now?
     if (query && query.state && query.state.startsWith('login') && query.code) {
-      await dispatch('doSsoLogin')
+      await dispatch('doSsoLogin', query)
       return
     }
     // retrieve auth token from localStorage
