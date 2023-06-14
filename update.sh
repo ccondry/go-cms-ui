@@ -28,6 +28,7 @@ else
         npm run build
       done
       echo "npm run build successful. copying dist files to www folder..."
+      rm -rf /var/www/html/go-cms-ui/*
       cp -rf dist/* /var/www/html/go-cms-ui/
       if [ $? -eq 0 ]; then
         echo "successfully installed go-cms-ui website files"
