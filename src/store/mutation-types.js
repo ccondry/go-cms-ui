@@ -12,6 +12,7 @@ export const FORWARD_TO = 'FORWARD_TO'
 export const SET_OAUTH2_INFO = 'SET_OAUTH2_INFO'
 export const SET_SERVER_VERSION = 'SET_SERVER_VERSION'
 export const SET_SSO_INFO = 'SET_SSO_INFO'
+export const SET_IS_LOGGING_IN = 'SET_IS_LOGGING_IN'
 
 // admin
 export const SET_USERS = 'SET_USERS'

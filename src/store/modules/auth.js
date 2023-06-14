@@ -9,11 +9,13 @@ const state = {
   serverVersion: null,
   ssoInfo: null,
   oauth2Info: null,
+  isLoggingIn: false,
 }
 
 const getters = {
   jwt: state => state.jwt,
   isLoggedIn: state => state.jwt !== null,
+  isLoggingIn: state => state.isLoggingIn,
   forwardTo: state => state.forwardTo,
   serverVersion: state => state.serverVersion,
   oauth2Info: state => state.oauth2Info,
@@ -68,6 +70,9 @@ const mutations = {
   },
   [types.SET_SSO_INFO] (state, data) {
     state.ssoInfo = data
+  },
+  [types.SET_IS_LOGGING_IN] (state, data) {
+    state.isLoggingIn = data
   },
 }
 
@@ -134,6 +139,35 @@ const actions = {
     console.log('logging out user')
     dispatch('unsetJwt')
   },
+  async doSsoLogin ({commit, dispatch, getters}) {
+    // don't run this more than once concurrently
+    if (getters.isLoggingIn) {
+      return
+    }
+    commit(types.SET_IS_LOGGING_IN, true)
+    // complete the SSO login on the server
+    const response = await dispatch('fetch', {
+      group: 'user',
+      type: 'login',
+      message: 'Complete SSO login',
+      url: getters.endpoints.sso,
+      options: {
+        method: 'POST',
+        // pass our current URL query params to REST API
+        body: query
+      },
+      showNotification: true
+    })
+    // remove SSO code and state from the current URL query parameters
+    delete query.code
+    delete query.state
+    router.push({query})
+    // if successful
+    if (!(response instanceof Error)) {
+      await dispatch('setJwt', response.jwt)
+    }
+    commit(types.SET_IS_LOGGING_IN, false)
+  },
   async checkLogin ({dispatch, getters}) {
     console.log('checking localstorage for JWT login token')
     // dispatch('setWorking', {group: 'app', type: 'checkLogin', value: true})
@@ -144,37 +178,7 @@ const actions = {
     console.log('route query', query)
     // is user completing SSO login right now?
     if (query && query.state && query.state.startsWith('login') && query.code) {
-      // complete the SSO login on the server
-      const response = await dispatch('fetch', {
-        group: 'user',
-        type: 'login',
-        message: 'Complete SSO login',
-        url: getters.endpoints.sso,
-        options: {
-          method: 'POST',
-          // pass our current URL query params to REST API
-          body: query
-        }
-      })
-      // login error?
-      if (response instanceof Error) {
-        // remove SSO code from the current URL query parameters
-        delete query.code
-        router.push({query})
-        // notify user of error
-        Toast.open({
-          message: response.message,
-          type: 'is-danger',
-          queue: false,
-          duration: 10 * 1000
-        })
-        return
-      }
-      // successful login - get user info
-      // dispatch('getUser')
-      // user info actually is just the JWT info
-      dispatch('setJwt', response.jwt)
-      // done
+      await dispatch('doSsoLogin')
       return
     }
     // retrieve auth token from localStorage
