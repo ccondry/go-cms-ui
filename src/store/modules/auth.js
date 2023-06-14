@@ -161,6 +161,7 @@ const actions = {
     // remove SSO code and state from the current URL query parameters
     delete query.code
     delete query.state
+    console.log('removing code and state from URL query', query)
     router.push({query})
     // if successful
     if (!(response instanceof Error)) {
