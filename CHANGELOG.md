@@ -4,6 +4,13 @@ Version numbers are semver-compatible dates in YYYY.MM.DD-X format,
 where X is the revision number
 
 
+# 2023.6.14-2
+
+### Fixes
+* **Login:** Fix login errors appearing after successful login and when
+refreshing the page after logging in.
+
+
 # 2023.6.14-1
 
 ### Fixes
