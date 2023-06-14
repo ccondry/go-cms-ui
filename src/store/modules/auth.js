@@ -162,10 +162,13 @@ const actions = {
     delete query.code
     delete query.state
     console.log('removing code and state from URL query', query)
-    router.replace({query: null}).catch(() => {})
+    router.replace({query}).catch((e) => console.log(e))
     // if successful
     if (!(response instanceof Error)) {
       await dispatch('setJwt', response.jwt)
+    } else {
+      // login error - go home
+      router.push({name: 'Home'}).catch((e) => console.log(e))
     }
     commit(types.SET_IS_LOGGING_IN, false)
   },
