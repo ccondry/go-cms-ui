@@ -5,3 +5,4 @@ stats.html
 npm-debug.log
 yarn-error.log
 .env
+package-lock.json
