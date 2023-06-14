@@ -21,16 +21,16 @@ const router = new VueRouter({
 })
 
 // copy query parameters on navigation, if they are present
-router.beforeEach((to, from, next) => {
-  if (!hasQueryParams(to) && hasQueryParams(from)) {
-    next({name: to.name, query: from.query})
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (!hasQueryParams(to) && hasQueryParams(from)) {
+//     next({name: to.name, query: from.query})
+//   } else {
+//     next()
+//   }
+// })
 
-function hasQueryParams (route) {
-  return !!Object.keys(route.query).length
-}
+// function hasQueryParams (route) {
+//   return !!Object.keys(route.query).length
+// }
 
 export default router
