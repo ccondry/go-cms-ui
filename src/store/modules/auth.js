@@ -162,7 +162,7 @@ const actions = {
     delete query.code
     delete query.state
     console.log('removing code and state from URL query', query)
-    router.replace({query})
+    router.replace({query: null}).catch(() => {})
     // if successful
     if (!(response instanceof Error)) {
       await dispatch('setJwt', response.jwt)
