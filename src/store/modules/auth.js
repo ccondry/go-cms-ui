@@ -1,5 +1,5 @@
 import * as types from 'src/store/mutation-types'
-import {ToastProgrammatic as Toast} from 'buefy'
+// import {ToastProgrammatic as Toast} from 'buefy'
 import {addUrlQueryParams, sleep, parseJwt} from 'src/utils'
 import router from 'src/router'
 
